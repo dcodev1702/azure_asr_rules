@@ -20,7 +20,6 @@ Block persistence through WMI event subscription (GUID e6db77e5-3df2-4cf1-b95a-6
 Use advanced protection against ransomware (GUID c1db55ab-c21a-4637-bb3f-a12568109d35)
 #>
 
-# TODO: Add Az modules and install if not present on the system
 # MAYBE: Add Azure Subscriptions before iterating over Resource Groups
 
 function Enable-ASR {
