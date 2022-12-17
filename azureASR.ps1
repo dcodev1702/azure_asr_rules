@@ -97,6 +97,7 @@ function Enable-ASR {
             6 { $ModeType = "Warn" }
         }
 
+        # Get list of Windows VM's in Azure & Azure ARC
         $azure_vms = Get-AzVM -Status
         $arc_vms = Get-AzConnectedMachine
         
