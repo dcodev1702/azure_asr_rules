@@ -81,7 +81,7 @@ function Enable-ASR {
             #$arc_vms = Get-AzConnectedMachine
             $arc_vms | ForEach-Object {
                 if($_.Status -eq 'Connected' -and $_.OsType -eq 'windows') {
-                    Write-Output "Azure ARC VM:$($_.Name)"
+                    Write-Output "Azure ARC VM: $($_.Name)"
                 }
             }
         }
