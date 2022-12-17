@@ -153,9 +153,18 @@ function Enable-ASR {
 
     End {
         
-        # TODO: Display Rules and Values to the user
         if ($VMEnabled) {
             Write-Output "`nThank you for enabling Attack Surface Reduction!"
+
+            $asr_ids = (Get-MpPreference).AttackSurfaceReductionRules_Ids
+            $asr_mode = (Get-MpPreference).AttackSurfaceReductionRules_Actions
+
+            $cntr = 0
+            foreach ($id in $asr_ids) {
+                #Add-MpPreference -AttackSurfaceReductionRules_Ids $id -AttackSurfaceReductionRules_Actions AuditMode
+                Write-Output "ASR ID [$cntr]: $id <-> $($asr_mode[$cntr])"
+                $cntr++
+            }
         }
     }
 }
