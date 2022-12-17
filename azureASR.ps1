@@ -27,7 +27,7 @@ function Enable-ASR {
     [CmdletBinding()] 
     Param (
         [Parameter(Mandatory = $true)]  [String]$ResourceGroup,
-        [Parameter(Mandatory = $false)]  [String]$Rule,
+        [Parameter(Mandatory = $false)] [String]$Rule,
         [Parameter(Mandatory = $true)]  [ValidateSet(0,1,2,6)] [int]$Mode,
         [Parameter(Mandatory = $false)] [String[]]$VirtualMachine,
         [Parameter(Mandatory = $false)] [Switch]$AllVMs = $false
