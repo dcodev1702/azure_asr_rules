@@ -147,7 +147,16 @@ function Enable-ASR {
                         Write-Output "Bro, your VM [$vm] cannot be found, it may be sleeping :("
                     }
 
-                    #TODO: Create log file and write results of each iteration to the log!
+                    #TODO: Create log file and write results of each machine's ASR state
+                    $asr_ids = (Get-MpPreference).AttackSurfaceReductionRules_Ids
+                    $asr_mode = (Get-MpPreference).AttackSurfaceReductionRules_Actions
+
+                    $cntr = 0
+                    foreach ($id in $asr_ids) {
+                        #Add-MpPreference -AttackSurfaceReductionRules_Ids $id -AttackSurfaceReductionRules_Actions AuditMode
+                        Write-Output "ASR ID [$cntr]: $id <-> $($asr_mode[$cntr])"
+                        $cntr++
+                    }
                 }
             }   
         }
@@ -157,16 +166,6 @@ function Enable-ASR {
         
         if ($VMEnabled) {
             Write-Output "`nThank you for enabling Attack Surface Reduction!"
-
-            $asr_ids = (Get-MpPreference).AttackSurfaceReductionRules_Ids
-            $asr_mode = (Get-MpPreference).AttackSurfaceReductionRules_Actions
-
-            $cntr = 0
-            foreach ($id in $asr_ids) {
-                #Add-MpPreference -AttackSurfaceReductionRules_Ids $id -AttackSurfaceReductionRules_Actions AuditMode
-                Write-Output "ASR ID [$cntr]: $id <-> $($asr_mode[$cntr])"
-                $cntr++
-            }
         }
     }
 }
