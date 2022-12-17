@@ -26,14 +26,49 @@ Use advanced protection against ransomware (GUID c1db55ab-c21a-4637-bb3f-a125681
 function Enable-ASR {
     [CmdletBinding()] 
     Param (
-        [Parameter(Mandatory = $true)]  [String]$ResourceGroup,
-        [Parameter(Mandatory = $false)] [String]$Rule,
-        [Parameter(Mandatory = $true)]  [ValidateSet(0,1,2,6)] [int]$Mode,
-        [Parameter(Mandatory = $false)] [String[]]$VirtualMachine,
-        [Parameter(Mandatory = $false)] [Switch]$AllVMs = $false
+        [Parameter(Mandatory = $true)]  
+        [String] $ResourceGroup = "",
+        
+        [Parameter(Mandatory = $false)] 
+        [String] $Rule = "",
+        
+        [Parameter(Mandatory = $true)]  
+        [ValidateSet(0,1,2,6)] [int] $Mode = 2,
+        
+        [Parameter(Mandatory = $false)] 
+        [String[]] $VirtualMachine = "",
+        
+        [Parameter(Mandatory = $false)] 
+        [Switch] $AllVMs = $false
     )
 
     Begin {
+
+        # Make sure any modules we depend on are installed
+        # Credit to: Koos Goossens @ Wortell.
+        $modulesToInstall = @(
+            'Az.Accounts',
+            'Az.Compute',
+            'Az.ConnectedMachine'
+        )
+        Write-Host "Installing/Importing PowerShell modules..." -ForegroundColor Green
+        $modulesToInstall | ForEach-Object {
+            if (-not (Get-Module -ListAvailable $_)) {
+                Write-Host "  ┖─ Module [$_] not found, installing..." -ForegroundColor Green
+                Install-Module $_ -Force
+            } else {
+                Write-Host "  ┖─ Module [$_] already installed." -ForegroundColor Green
+            }
+        }
+
+        $modulesToInstall | ForEach-Object {
+            if (-not (Get-InstalledModule $_)) {
+                Write-Host "  ┖─ Module [$_] not loaded, importing..." -ForegroundColor Green
+                Import-Module $_ -Force
+            } else {
+                Write-Host "  ┖─ Module [$_] already loaded." -ForegroundColor Green
+            }
+        }
 
         $asr_rules = @(
             '56a863a9-875e-4185-98a7-b882c64b5ce5', # Block abuse of vuln signed drivers
@@ -88,8 +123,13 @@ function Enable-ASR {
         }
 
         if ($AllVMs) {
-            $VMEnabled = $true
-            Write-Output "`nEnable ASR ON ALL THE VMs!"
+            
+            if ($Mode -gt 0) {
+                $VMEnabled = $true
+                Write-Output "`nEnable ASR ON ALL THE VMs!"
+            } else {
+                Write-Output "`nDisable ASR ON ALL THE VMs!"
+            }
             $totalVMs
 
         } else {
@@ -97,8 +137,13 @@ function Enable-ASR {
             foreach ($vm in $VirtualMachine) {
                 foreach ($azureVM in $totalVMs) {
                     if ($vm -eq $azureVM) {
-                        $VMEnabled = $true
-                        Write-Output "User specified VM [$vm] is now ASR enabled!"
+                        if ($Mode -gt 0) { 
+                            $VMEnabled = $true
+                            Write-Output "User specified VM [$vm] is now ASR enabled!"
+                        } else {
+                            Write-Output "User specified VM [$vm] is now ASR disabled!"
+                        }
+                        
                     } else {
                         Write-Output "Bro, your VM [$vm] cannot be found, it may be sleeping :("
                     }
