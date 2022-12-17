@@ -26,8 +26,8 @@ Use advanced protection against ransomware (GUID c1db55ab-c21a-4637-bb3f-a125681
 function Enable-ASR {
     [CmdletBinding()] 
     Param (
-        [Parameter(Mandatory = $true)] [String]$ResourceGroup,
-        [Parameter(Mandatory = $true)] [ValidateSet(0,1,2,6)] [int]$Mode,
+        [Parameter(Mandatory = $true)]  [String]$ResourceGroup,
+        [Parameter(Mandatory = $true)]  [ValidateSet(0,1,2,6)] [int]$Mode,
         [Parameter(Mandatory = $false)] [String[]]$VirtualMachine,
         [Parameter(Mandatory = $false)] [Switch]$AllVMs = $false
     )
