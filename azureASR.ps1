@@ -27,6 +27,7 @@ function Enable-ASR {
     [CmdletBinding()] 
     Param (
         [Parameter(Mandatory = $true)]  [String]$ResourceGroup,
+        [Parameter(Mandatory = $false)]  [String]$Rule,
         [Parameter(Mandatory = $true)]  [ValidateSet(0,1,2,6)] [int]$Mode,
         [Parameter(Mandatory = $false)] [String[]]$VirtualMachine,
         [Parameter(Mandatory = $false)] [Switch]$AllVMs = $false
@@ -53,7 +54,8 @@ function Enable-ASR {
             'c1db55ab-c21a-4637-bb3f-a12568109d35'  # Use advanced protection against ransomware
         )
 
-        $ModeType = ""
+        [bool]$VMEnabled = $false
+        [String]$ModeType = ""
         switch ( $Mode ) {
             0 { $ModeType = "Disabled" }
             1 { $ModeType = "Enabled" }
@@ -61,36 +63,55 @@ function Enable-ASR {
             6 { $ModeType = "Warn" }
         }
 
-        if ($AllVMs) {
-            $azure_vms = Get-AzVM -Status
-            $arc_vms = Get-AzConnectedMachine
-        }
+        $azure_vms = Get-AzVM -Status
+        $arc_vms = Get-AzConnectedMachine
         
     }
     
     Process {
         Write-Output("$ResourceGroup : ASR -> $ModeType on Host: $VirtualMachine")
 
-        if ($AllVMs) {
-            $azure_vms | ForEach-Object {
-                if($_.StorageProfile.OsDisk.OsType -eq 'Windows' -and $_.PowerState -eq 'VM running') {
-                    Write-Output "Azure VM: $($_.Name)"
-                } 
-            }
+        $totalVMs = @()
+        
+        $azure_vms | ForEach-Object {
+            if($_.StorageProfile.OsDisk.OsType -eq 'Windows' -and $_.PowerState -eq 'VM running') {
+                $totalVMs += $_.Name
+                Write-Output "Azure VM: $($_.Name)"
+            } 
+        }
 
-            #$arc_vms = Get-AzConnectedMachine
-            $arc_vms | ForEach-Object {
-                if($_.Status -eq 'Connected' -and $_.OsType -eq 'windows') {
-                    Write-Output "Azure ARC VM: $($_.Name)"
-                }
+        $arc_vms | ForEach-Object {
+            if($_.Status -eq 'Connected' -and $_.OsType -eq 'windows') {
+                $totalVMs += $_.Name
+                Write-Output "Azure ARC VM: $($_.Name)"
             }
+        }
+
+        if ($AllVMs) {
+            $VMEnabled = $true
+            Write-Output "`nEnable ASR ON ALL THE VMs!"
+            $totalVMs
+
+        } else {
+
+            foreach ($vm in $VirtualMachine) {
+                foreach ($azureVM in $totalVMs) {
+                    if ($vm -eq $azureVM) {
+                        $VMEnabled = $true
+                        Write-Output "User specified VM [$vm] is now ASR enabled!"
+                    } else {
+                        Write-Output "Bro, your VM [$vm] cannot be found, it may be sleeping :("
+                    }
+                }
+            }   
         }
     }
 
     End {
         
         # TODO: Display Rules and Values to the user
-        Write-Output "Thank you for enabling Attack Surface Reduction!"
+        if ($VMEnabled) {
+            Write-Output "`nThank you for enabling Attack Surface Reduction!"
+        }
     }
-
 }
