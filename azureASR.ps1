@@ -146,6 +146,8 @@ function Enable-ASR {
                     } else {
                         Write-Output "Bro, your VM [$vm] cannot be found, it may be sleeping :("
                     }
+
+                    #TODO: Create log file and write results of each iteration to the log!
                 }
             }   
         }
