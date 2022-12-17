@@ -7,6 +7,10 @@
   
   Author: Lorenzo J. Ireland
   Date: 16 Dec 2022
+  
+  Usage: 
+    Enable ALL VMs:       Enable-ASR -ResourceGroup 'VMTESTRG' -Mode 2 -All
+    Enable specified VMs: Enable-ASR -ResourceGroup 'VMTESTRG' -Mode 2 -VirtualMachine 'Host-1','Host-2','Host-3'
 ########################################################>
 <#
 Warn mode isn't supported for three attack surface reduction rules when you configure them in Microsoft Endpoint Manager. (If you use Group Policy to configure your attack surface reduction rules, warn mode is supported.) The three rules that do not support warn mode when you configure them in Microsoft Endpoint Manager are as follows:
@@ -24,8 +28,8 @@ function Enable-ASR {
     Param (
         [Parameter(Mandatory = $true)] [String]$ResourceGroup,
         [Parameter(Mandatory = $true)] [ValidateSet(0,1,2,6)] [int]$Mode,
-        [Parameter(Mandatory = $false)] [String]$VirtualMachine,
-        [Parameter(Mandatory = $false)] [Switch]$All = $false
+        [Parameter(Mandatory = $false)] [String[]]$VirtualMachine,
+        [Parameter(Mandatory = $false)] [Switch]$AllVMs = $false
     )
 
     Begin {
@@ -57,7 +61,7 @@ function Enable-ASR {
             6 { $ModeType = "Warn" }
         }
 
-        if ($All) {
+        if ($AllVMs) {
             $azure_vms = Get-AzVM -Status
             $arc_vms = Get-AzConnectedMachine
         }
@@ -67,19 +71,20 @@ function Enable-ASR {
     Process {
         Write-Output("$ResourceGroup : ASR -> $ModeType on Host: $VirtualMachine")
 
-        $azure_vms | ForEach-Object {
-            if($_.StorageProfile.OsDisk.OsType -eq 'Windows' -and $_.PowerState -eq 'VM running') {
-                Write-Output "Azure VM: $($_.Name)"
-            } 
-        }
-        
-        #$arc_vms = Get-AzConnectedMachine
-        $arc_vms | ForEach-Object {
-            if($_.Status -eq 'Connected' -and $_.OsType -eq 'windows') {
-                Write-Output "Azure ARC VM:$($_.Name)"
+        if ($AllVMs) {
+            $azure_vms | ForEach-Object {
+                if($_.StorageProfile.OsDisk.OsType -eq 'Windows' -and $_.PowerState -eq 'VM running') {
+                    Write-Output "Azure VM: $($_.Name)"
+                } 
+            }
+
+            #$arc_vms = Get-AzConnectedMachine
+            $arc_vms | ForEach-Object {
+                if($_.Status -eq 'Connected' -and $_.OsType -eq 'windows') {
+                    Write-Output "Azure ARC VM:$($_.Name)"
+                }
             }
         }
-
     }
 
     End {
