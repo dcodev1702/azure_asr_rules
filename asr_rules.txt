@@ -13,4 +13,4 @@ e6db77e5-3df2-4cf1-b95a-636979351e5b, # Block persistence through WMI event subs
 d1e49aac-8f56-4280-b9ba-993a6d77406c, # Block process creations originating from PSExec & WMI commands
 b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4, # Block untrusted & unsigned processes that run from USB
 92e97fa1-2edf-4476-bdd6-9dd0b4dddc7b, # Block Win32 API calls from Office macros
-c1db55ab-c21a-4637-bb3f-a12568109d35  # Use advanced protection against ransomware
+c1db55ab-c21a-4637-bb3f-a12568109d35, # Use advanced protection against ransomware

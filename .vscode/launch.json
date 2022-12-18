@@ -10,7 +10,7 @@
             "request": "launch",
             "script": "${file}",
             "args": ["Set-ASRRules", "-ResourceGroup", "VMTESTRG", "-Mode", "0", "-VirtualMachine", "WinZo10-VM3-ENT", 
-            "-Rule", "c1db55ab-c21a-4637-bb3f-a12568109d36"]
+            "-Rule", "c1db55ab-c21a-4637-bb3f-a12568109d3"]
         }
     ]
 }

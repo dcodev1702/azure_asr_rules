@@ -114,11 +114,12 @@ function Set-ASRRules {
         )
         #>
         
+        #$rules_from_file = @()
         $asr_rules = @()
         if (Test-Path -Path $asr_rule_file) {
-            $asr_rules = [System.IO.File]::ReadAllLines($asr_rule_file)
+            $rules_from_file = [System.IO.File]::ReadAllLines($asr_rule_file)
             
-            $asr_rules | ForEach-Object { $asr_rules += $_.Split(',')[0] }            
+            $rules_from_file | ForEach-Object { $asr_rules += [String]$_.Split(',')[0] }            
         }
 
 
