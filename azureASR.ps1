@@ -159,6 +159,7 @@ function Enable-ASR {
 
         # If -VirtualMachine is selected, check to see if user provided VM's are 
         # in $totalRunningVMs before ASR rule application/consideration
+        # TODO: Need to test for multiple BAD Machines and mix it up!
         $VirtualMachine | Where-Object { 
             $_ -notin $totalRunningVMs; 
             Write-Host "!!! `"$_`" could not be found !!! [$_] might be sleeping, goodbye :|" -ForegroundColor Red; 
