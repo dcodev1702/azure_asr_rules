@@ -37,35 +37,40 @@ function Enable-ASR {
         [String[]] $VirtualMachine = $null,
         
         [Parameter(Mandatory = $false)]
-        [Switch] $AllVMs = $false
+        [Switch] $AllVMs = $false,
+
+        [Parameter(Mandatory = $false)]
+        [Switch] $CheckAzModules = $false
     )
 
     Begin {
 
-        # Make sure any modules we depend on are installed
-        # Credit to: Koos Goossens @ Wortell.
-        $modulesToInstall = @(
-            'Az.Accounts',
-            'Az.Compute',
-            'Az.ConnectedMachine'
-        )
+        if ($CheckAzModules) {
+            # Make sure any modules we depend on are installed
+            # Credit to: Koos Goossens @ Wortell.
+            $modulesToInstall = @(
+                'Az.Accounts',
+                'Az.Compute',
+                'Az.ConnectedMachine'
+            )
 
-        Write-Host "Installing/Importing PowerShell modules..." -ForegroundColor Green
-        $modulesToInstall | ForEach-Object {
-            if (-not (Get-Module -ListAvailable $_)) {
-                Write-Host "  ┖─ Module [$_] not found, installing..." -ForegroundColor Green
-                Install-Module $_ -Force
-            } else {
-                Write-Host "  ┖─ Module [$_] already installed." -ForegroundColor Green
+            Write-Host "Installing/Importing PowerShell modules..." -ForegroundColor Green
+            $modulesToInstall | ForEach-Object {
+                if (-not (Get-Module -ListAvailable $_)) {
+                    Write-Host "  ┖─ Module [$_] not found, installing..." -ForegroundColor Green
+                    Install-Module $_ -Force
+                } else {
+                    Write-Host "  ┖─ Module [$_] already installed." -ForegroundColor Green
+                }
             }
-        }
 
-        $modulesToInstall | ForEach-Object {
-            if (-not (Get-InstalledModule $_)) {
-                Write-Host "  ┖─ Module [$_] not loaded, importing..." -ForegroundColor Green
-                Import-Module $_ -Force
-            } else {
-                Write-Host "  ┖─ Module [$_] already loaded." -ForegroundColor Green
+            $modulesToInstall | ForEach-Object {
+                if (-not (Get-InstalledModule $_)) {
+                    Write-Host "  ┖─ Module [$_] not loaded, importing..." -ForegroundColor Green
+                    Import-Module $_ -Force
+                } else {
+                    Write-Host "  ┖─ Module [$_] already loaded." -ForegroundColor Green
+                }
             }
         }
 
@@ -106,42 +111,52 @@ function Enable-ASR {
         Write-Output("$ResourceGroup : ASR -> $ModeType on Host: $VirtualMachine")
 
         # Get list of RUNNING VM's within the registered list of Windows VM's.
-        $totalVMs = @()
+        $totalRunningVMs = @()
         $azure_vms | ForEach-Object {
             if($_.StorageProfile.OsDisk.OsType -eq 'Windows' -and $_.PowerState -eq 'VM running') {
-                $totalVMs += $_.Name
+                $totalRunningVMs += $_.Name
                 Write-Output "Azure VM: $($_.Name)"
             } 
         }
 
         $arc_vms | ForEach-Object {
             if($_.Status -eq 'Connected' -and $_.OsType -eq 'windows') {
-                $totalVMs += $_.Name
+                $totalRunningVMs += $_.Name
                 Write-Output "Azure ARC VM: $($_.Name)"
             }
         }
 
+        # If -All is toggled, loop through all running Windows VM's and enable/disable ASR accordingly
         if ($AllVMs) {
             
-            if ($Mode -gt 0) {
-                $VMEnabled = $true
-                Write-Output "`nEnable ASR ON ALL THE VMs!"
-            } else {
-                Write-Output "`nDisable ASR ON ALL THE VMs!"
+            $totalRunningVMs | ForEach-Object {
+                if ($Mode -gt 0) {
+                    $VMEnabled = $true
+                    Write-Output "`nEnable ASR ON $(($totalRunningVMs).count) VMs!"
+                    Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $_.Name -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType}
+                    Start-Sleep -s 1
+                } else {
+                    Write-Output "`nDisable ASR ON $(($totalRunningVMs).count) VMs!"
+                    Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $_.Name -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType}
+                    Start-Sleep -s 2
+                }
             }
-            $totalVMs
+            $totalRunningVMs
 
         } else {
-
-            # Search VM's to ensure the VM provided exists within the Resource Group!
+        
+            # Search VM's to ensure the specified VM(s) exists within the Resource Group!
             foreach ($vm in $VirtualMachine) {
-                foreach ($azureVM in $totalVMs) {
+                foreach ($azureVM in $totalRunningVMs) {
                     if ($vm -eq $azureVM) {
                         if ($Mode -gt 0) { 
                             $VMEnabled = $true
-                            Write-Output "User specified VM [$vm] is now ASR enabled!"
+                            Write-Output "Windows VM [$vm] is now ASR enabled!"
+                            Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $_.Name -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType}
+
                         } else {
-                            Write-Output "User specified VM [$vm] is now ASR disabled!"
+                            Write-Output "Windows VM [$vm] is now ASR disabled!"
+                            Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $_.Name -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType}
                         }
                         
                     } else {
