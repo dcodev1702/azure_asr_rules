@@ -173,7 +173,13 @@ function Enable-ASR {
                             Start-Sleep -s 1
                         } else {
                             # Invoke specific rules
-                            Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType;"Rule" = $Rule}
+                            $Rule.GetType()
+                            Write-Output $Rule
+                            #Invoke-Command -ScriptBlock { ./run_asr.ps1 -Rule 'd4f940ab-401b-4efc-aadc-ad5f3c50688a','c1db55ab-c21a-4637-bb3f-a12568109d35' -Mode 'Warn' }
+                            $parameters = @{
+                                    "Mode" = $ModeType
+                                    "Rule" = $Rule }
+                            Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter $parameters
                             Start-Sleep -s 1
                         }
                     } else {

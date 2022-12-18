@@ -1,10 +1,13 @@
 <#
-
-
+Name: run_asr.ps1 [Helper Script]
+Author: Lorenzo J. Ireland
+Date: 17 Dec 2022
+Usage: 
+    Local: powershell.exe -Command .\run_asr.ps1 -Rule 'd4f940ab-401b-4efc-aadc-ad5f3c50688a','c1db55ab-c21a-4637-bb3f-a12568109d35' -Mode 'Warn'
 #>
 Param (
     [Parameter(Mandatory = $false)]  
-    [String] $Mode = 'AuditMode',
+    [String] $Mode = 'Disabled',
     
     [Parameter(Mandatory = $false)] 
     [String[]] $Rule = $null
@@ -32,7 +35,8 @@ $asr_rules = @(
     
     
 $cntr = 0
-$Rules = @()
+#$Rules = @()
+Write-Output "RULES FROM RUN_ASR() -> $Rule <-> $($Rule.GetType())" | Out-File -FilePath C:\tmp\asr_debug.txt -Append
 if ([String]::IsNullOrEmpty($Rule)) {
    
     Write-Host "[$env:COMPUTERNAME] ::: Applying $(($asr_rules).count) ASR Rules -> MODE::[$Mode] to the Endpoint" -ForegroundColor Green
@@ -42,11 +46,12 @@ if ([String]::IsNullOrEmpty($Rule)) {
         $cntr++
     }
 } else {
-    $Rules = $rule.Split(',')
+    Write-Output "RUN_ASR -- RULES: $Rule -> $($Rule.GetType())"
+    #$Rules = $Rule.Split(',')
     $cntr = 0
-    Write-Host "[$env:COMPUTERNAME] ::: Applying $(($Rules).count) ASR Rules -> MODE::[$Mode] to the Endpoint" -ForegroundColor Green
-    $Rules | ForEach-Object {
-        #Add-MpPreference -AttackSurfaceReductionRules_Ids $_ -AttackSurfaceReductionRules_Actions $Mode
+    Write-Host "[$env:COMPUTERNAME] ::: Applying $(($Rule).count) ASR Rules -> MODE::[$Mode] to the Endpoint" -ForegroundColor Green
+    $Rule | ForEach-Object {
+        Add-MpPreference -AttackSurfaceReductionRules_Ids $_ -AttackSurfaceReductionRules_Actions $Mode
         Write-Host "Rule[$cntr]: $_ -> Mode: $Mode" -ForegroundColor Yellow
         $cntr++
     }
