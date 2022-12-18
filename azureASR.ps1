@@ -16,7 +16,10 @@
     Enable specified Rules: 
         CMD: Enable-ASR -ResourceGroup 'VMTESTRG' -Mode 6 -VirtualMachine 'WinZo10-VM-ENT' \
     -Rule "9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2,01443614-cd74-433a-b99e-2ecdc07bfc25,d1e49aac-8f56-4280-b9ba-993a6d77406c"
-########################################################>
+
+TODO:
+  -- Validate specific rules provided by user to asr_rules table before executing Invoke-AzVMRunCommand
+###########################################################>
 <#
 Warn mode isn't supported for three attack surface reduction rules when you configure them in Microsoft Endpoint Manager. (If you use Group Policy to configure your attack surface reduction rules, warn mode is supported.) The three rules that do not support warn mode when you configure them in Microsoft Endpoint Manager are as follows:
 

@@ -33,17 +33,17 @@ $asr_rules = @(
     'c1db55ab-c21a-4637-bb3f-a12568109d35'  # Use advanced protection against ransomware
 )
     
-    
-$cntr = 0
+[String]$file = "C:\tmp\asr_debug.txt"
+[int]$cntr = 0
 $Rules = @()
 $Rules = $Rule.Split(',')
 $Rules | ForEach-Object {
-    Write-Output "RULES FROM RUN_ASR() -> $_" | Out-File -FilePath "C:\tmp\asr_debug.txt" -Append
+    Write-Output "RULES FROM RUN_ASR() -> $_" | Out-File -FilePath $file -Append
 }
 
 if ([String]::IsNullOrEmpty($Rule)) {
    
-    Write-Host "[$env:COMPUTERNAME] ::: Applying $(($asr_rules).count) ASR Rules -> MODE::[$Mode] to the Endpoint" -ForegroundColor Green
+    Write-Host "[$env:COMPUTERNAME] ::: Applying $(($asr_rules).count) ASR Rules -> MODE::[$Mode] to the Endpoint" | Out-File -FilePath $file -Append
     $asr_rules | ForEach-Object {
         Add-MpPreference -AttackSurfaceReductionRules_Ids $_ -AttackSurfaceReductionRules_Actions $Mode
         Write-Host "Rule[$cntr]: $_ -> Mode: $Mode" -ForegroundColor Yellow
@@ -51,20 +51,18 @@ if ([String]::IsNullOrEmpty($Rule)) {
     }
 } else {
 
-    #Write-Host "[$env:COMPUTERNAME] ::: Applying $(($Rules).count) ASR Rules -> MODE::[$Mode] to the Endpoint" -ForegroundColor Green
+    Write-Host "[$env:COMPUTERNAME] ::: Applying $(($Rules).count) ASR Rules -> MODE::[$Mode] to the Endpoint" | Out-File -FilePath $file -Append
     $Rules | ForEach-Object {
         Add-MpPreference -AttackSurfaceReductionRules_Ids $_ -AttackSurfaceReductionRules_Actions $Mode
     }
 }
         
 #TODO: Create log file and write results of each machine's ASR state
-<#
 $asr_ids = (Get-MpPreference).AttackSurfaceReductionRules_Ids
 $asr_mode = (Get-MpPreference).AttackSurfaceReductionRules_Actions
 
 $cntr = 0
 foreach ($id in $asr_ids) {
-    Write-Output "ASR ID [$cntr]: $id <-> $($asr_mode[$cntr])"
+    Write-Output "ASR ID [$cntr]: $id <-> $($asr_mode[$cntr])" | Out-File -FilePath $file -Append
     $cntr++
 }
-#>
