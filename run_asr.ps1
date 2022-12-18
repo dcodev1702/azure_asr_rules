@@ -10,7 +10,7 @@ Param (
     [String] $Mode = 'Disabled',
     
     [Parameter(Mandatory = $false)] 
-    [String[]] $Rule = $null
+    [String] $Rule = $null
 )
 
 
@@ -35,8 +35,12 @@ $asr_rules = @(
     
     
 $cntr = 0
-#$Rules = @()
-Write-Output "RULES FROM RUN_ASR() -> $Rule <-> $($Rule.GetType())" | Out-File -FilePath C:\tmp\asr_debug.txt -Append
+$Rules = @()
+$Rules = $Rule.Split(',')
+$Rules | ForEach-Object {
+    Write-Output "RULES FROM RUN_ASR() -> $_" | Out-File -FilePath "C:\tmp\asr_debug.txt" -Append
+}
+
 if ([String]::IsNullOrEmpty($Rule)) {
    
     Write-Host "[$env:COMPUTERNAME] ::: Applying $(($asr_rules).count) ASR Rules -> MODE::[$Mode] to the Endpoint" -ForegroundColor Green
@@ -46,14 +50,10 @@ if ([String]::IsNullOrEmpty($Rule)) {
         $cntr++
     }
 } else {
-    Write-Output "RUN_ASR -- RULES: $Rule -> $($Rule.GetType())"
-    #$Rules = $Rule.Split(',')
-    $cntr = 0
-    Write-Host "[$env:COMPUTERNAME] ::: Applying $(($Rule).count) ASR Rules -> MODE::[$Mode] to the Endpoint" -ForegroundColor Green
-    $Rule | ForEach-Object {
+
+    #Write-Host "[$env:COMPUTERNAME] ::: Applying $(($Rules).count) ASR Rules -> MODE::[$Mode] to the Endpoint" -ForegroundColor Green
+    $Rules | ForEach-Object {
         Add-MpPreference -AttackSurfaceReductionRules_Ids $_ -AttackSurfaceReductionRules_Actions $Mode
-        Write-Host "Rule[$cntr]: $_ -> Mode: $Mode" -ForegroundColor Yellow
-        $cntr++
     }
 }
         

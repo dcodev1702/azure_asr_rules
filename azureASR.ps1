@@ -9,8 +9,13 @@
   Date: 16 Dec 2022
   
   Usage: 
-    Enable ALL VMs:       Enable-ASR -ResourceGroup 'VMTESTRG' -Mode 2 -All
-    Enable specified VMs: Enable-ASR -ResourceGroup 'VMTESTRG' -Mode 2 -VirtualMachine 'Host-1','Host-2','Host-3'
+    Enable ALL VMs:       
+        CMD: Enable-ASR -ResourceGroup 'VMTESTRG' -Mode 2 -All
+    Enable specified VMs: 
+        CMD: Enable-ASR -ResourceGroup 'VMTESTRG' -Mode 2 -VirtualMachine 'Host-1','Host-2','Host-3'
+    Enable specified Rules: 
+        CMD: Enable-ASR -ResourceGroup 'VMTESTRG' -Mode 6 -VirtualMachine 'WinZo10-VM-ENT' \
+    -Rule "9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2,01443614-cd74-433a-b99e-2ecdc07bfc25,d1e49aac-8f56-4280-b9ba-993a6d77406c"
 ########################################################>
 <#
 Warn mode isn't supported for three attack surface reduction rules when you configure them in Microsoft Endpoint Manager. (If you use Group Policy to configure your attack surface reduction rules, warn mode is supported.) The three rules that do not support warn mode when you configure them in Microsoft Endpoint Manager are as follows:
@@ -28,7 +33,7 @@ function Enable-ASR {
         [String] $ResourceGroup = $null,
         
         [Parameter(Mandatory = $false)]
-        [String[]] $Rule = $null,
+        [String] $Rule = $null,
         
         [Parameter(Mandatory = $true)]
         [ValidateSet(0,1,2,6)] [int] $Mode = 2,
@@ -173,12 +178,7 @@ function Enable-ASR {
                             Start-Sleep -s 1
                         } else {
                             # Invoke specific rules
-                            $Rule.GetType()
-                            Write-Output $Rule
-                            #Invoke-Command -ScriptBlock { ./run_asr.ps1 -Rule 'd4f940ab-401b-4efc-aadc-ad5f3c50688a','c1db55ab-c21a-4637-bb3f-a12568109d35' -Mode 'Warn' }
-                            $parameters = @{
-                                    "Mode" = $ModeType
-                                    "Rule" = $Rule }
+                            $parameters = @{ "Mode" = $ModeType; "Rule" = $Rule }
                             Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter $parameters
                             Start-Sleep -s 1
                         }
