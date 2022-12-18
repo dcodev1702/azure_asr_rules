@@ -111,11 +111,22 @@ function Enable-ASR {
         }
 
         # If specific rules have been provided, validate them before proceeding
+        $tmpRules = @()
+        $tmpRules = $Rule.Split(',')
+
         if (-not ([String]::IsNullOrEmpty($Rule))) {
+            $tmpRules | Where-Object -FilterScript { 
+                if($_ -notin $asr_rules) { 
+                    Write-Host "Provied Rule: $_ NOT FOUND!" -ForegroundColor Yellow
+                    Exit 4
+                } 
+            }
+        }
+        <#if (-not ([String]::IsNullOrEmpty($Rule))) {
             $tmpRules = @()
             $tmpRules = $Rule.Split(',')
             Write-Host "USER RULE: $tmpRules" -ForegroundColor Yellow
-            $tmpRules | Where-Object { 
+            $Rule | Where-Object { 
                 $_ -notin $asr_rules;
                 Write-Host "!!! Rule `"$_`" could not be found. Please correct your ASR Rule, goodbye :|" -ForegroundColor Red; 
                 Exit 4;
@@ -125,7 +136,7 @@ function Enable-ASR {
                 #    Exit 4;
                 #}
             }
-        }
+        }#>
 
         # Get list of registered Windows VM's in Azure & Azure ARC
         $azure_vms = Get-AzVM -Status

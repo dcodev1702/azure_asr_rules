@@ -9,7 +9,7 @@
             "type": "PowerShell",
             "request": "launch",
             "script": "${file}",
-            "args": ["-ResourceGroup", "VMTESTRG", "-Mode", "0", "-VirtualMachine", "WinZo10-VM3-ENT", 
+            "args": ["Enable-ASR", "-ResourceGroup", "VMTESTRG", "-Mode", "0", "-VirtualMachine", "WinZo10-VM3-ENT", 
             "-Rule", "c1db55ab-c21a-4637-bb3f-a12568109d35"]
         }
     ]
