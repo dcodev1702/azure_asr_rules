@@ -24,19 +24,19 @@ Use advanced protection against ransomware (GUID c1db55ab-c21a-4637-bb3f-a125681
 function Enable-ASR {
     [CmdletBinding()] 
     Param (
-        [Parameter(Mandatory = $true)]  
+        [Parameter(Mandatory = $true)]
         [String] $ResourceGroup = $null,
         
-        [Parameter(Mandatory = $false)] 
+        [Parameter(Mandatory = $false)]
         [String] $Rule = $null,
         
-        [Parameter(Mandatory = $true)]  
+        [Parameter(Mandatory = $true)]
         [ValidateSet(0,1,2,6)] [int] $Mode = 2,
         
-        [Parameter(Mandatory = $false)] 
+        [Parameter(Mandatory = $false)]
         [String[]] $VirtualMachine = $null,
         
-        [Parameter(Mandatory = $false)] 
+        [Parameter(Mandatory = $false)]
         [Switch] $AllVMs = $false
     )
 
@@ -49,7 +49,7 @@ function Enable-ASR {
             'Az.Compute',
             'Az.ConnectedMachine'
         )
-        
+
         Write-Host "Installing/Importing PowerShell modules..." -ForegroundColor Green
         $modulesToInstall | ForEach-Object {
             if (-not (Get-Module -ListAvailable $_)) {
@@ -97,7 +97,7 @@ function Enable-ASR {
             6 { $ModeType = "Warn" }
         }
 
-        # Get list of Windows VM's in Azure & Azure ARC
+        # Get list of registered Windows VM's in Azure & Azure ARC
         $azure_vms = Get-AzVM -Status
         $arc_vms = Get-AzConnectedMachine   
     }
@@ -105,8 +105,8 @@ function Enable-ASR {
     Process {
         Write-Output("$ResourceGroup : ASR -> $ModeType on Host: $VirtualMachine")
 
+        # Get list of RUNNING VM's within the registered list of Windows VM's.
         $totalVMs = @()
-        
         $azure_vms | ForEach-Object {
             if($_.StorageProfile.OsDisk.OsType -eq 'Windows' -and $_.PowerState -eq 'VM running') {
                 $totalVMs += $_.Name

@@ -39,7 +39,7 @@ if ([String]::IsNullOrEmpty($Rule)) {
     Write-Host "[$env:COMPUTERNAME] ::: Applying $(($asr_rules).count) ASR Rules -> MODE::[$Mode] to the Endpoint" -ForegroundColor Green
     $asr_rules | ForEach-Object {
         #Add-MpPreference -AttackSurfaceReductionRules_Ids $_ -AttackSurfaceReductionRules_Actions $Mode
-        Write-Host "Rule[$cntr]: $_ -> Mode: $Mode" -ForegroundColor Cyan
+        Write-Host "Rule[$cntr]: $_ -> Mode: $Mode" -ForegroundColor Yellow
         $cntr++
     }
 } else {
@@ -47,7 +47,7 @@ if ([String]::IsNullOrEmpty($Rule)) {
     $cntr = 0
     $Rules | ForEach-Object {
         #Add-MpPreference -AttackSurfaceReductionRules_Ids $_ -AttackSurfaceReductionRules_Actions $Mode
-        Write-Host "Rule[$cntr]: $_ -> Mode: $Mode" -ForegroundColor Cyan
+        Write-Host "Rule[$cntr]: $_ -> Mode: $Mode" -ForegroundColor Yellow
         $cntr++
     }
 }
