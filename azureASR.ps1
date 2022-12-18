@@ -11,15 +11,15 @@
     Usage:
     ------
     Enable ALL VMs:       
-        CMD: Enable-ASR -ResourceGroup 'VMTESTRG' -Mode 2 -All
+        CMD: Set-ASRRules -ResourceGroup 'VMTESTRG' -Mode 2 -All
     Enable specified VMs: 
-        CMD: Enable-ASR -ResourceGroup 'VMTESTRG' -Mode 2 -VirtualMachine 'Host-1','Host-2','Host-3'
+        CMD: Set-ASRRules -ResourceGroup 'VMTESTRG' -Mode 2 -VirtualMachine 'Host-1','Host-2','Host-3'
     Enable specified Rules: 
-        CMD: Enable-ASR -ResourceGroup 'VMTESTRG' -Mode 6 -VirtualMachine 'WinZo10-VM-ENT' \
+        CMD: Set-ASRRules -ResourceGroup 'VMTESTRG' -Mode 6 -VirtualMachine 'WinZo10-VM-ENT' \
         -Rule "9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2,01443614-cd74-433a-b99e-2ecdc07bfc25,d1e49aac-8f56-4280-b9ba-993a6d77406c"
 
     Enable specified Rules (BAD Rule supplied [last rule, last character]):
-        CMD: Enable-ASR -ResourceGroup 'VMTESTRG' -Mode 6 -VirtualMachine 'WinZo10-VM3-ENT' \
+        CMD: Set-ASRRules -ResourceGroup 'VMTESTRG' -Mode 6 -VirtualMachine 'WinZo10-VM3-ENT' \
         -Rule "7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c,d4f940ab-401b-4efc-aadc-ad5f3c50688b"
 
     TODO:
@@ -34,7 +34,7 @@ Use advanced protection against ransomware (GUID c1db55ab-c21a-4637-bb3f-a125681
 #>
 
 # MAYBE: Add Azure Subscriptions before iterating over Resource Groups
-function Enable-ASR {
+function Set-ASRRules {
     [CmdletBinding()] 
     Param (
         [Parameter(Mandatory = $true)]
