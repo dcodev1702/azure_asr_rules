@@ -1,0 +1,16 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "PowerShell: Launch Current File",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${file}",
+            "args": ["-ResourceGroup", "VMTESTRG", "-Mode", "0", "-VirtualMachine", "WinZo10-VM3-ENT", 
+            "-Rule", "c1db55ab-c21a-4637-bb3f-a12568109d35"]
+        }
+    ]
+}

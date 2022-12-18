@@ -30,7 +30,7 @@ Use advanced protection against ransomware (GUID c1db55ab-c21a-4637-bb3f-a125681
 
 # MAYBE: Add Azure Subscriptions before iterating over Resource Groups
 function Enable-ASR {
-    [CmdletBinding()] 
+    #[CmdletBinding()] 
     Param (
         [Parameter(Mandatory = $true)]
         [String] $ResourceGroup = $null,
