@@ -129,37 +129,53 @@ function Enable-ASR {
         # If -All is toggled, loop through all running Windows VM's and enable/disable ASR accordingly
         # Add logic for specific rules for All and Selected VM's
         if ($AllVMs) {
+
+            if ($Mode -gt 0) {
+                $VMEnabled = $true
+                Write-Output "`nEnable ASR ON $(($totalRunningVMs).count) VMs!"
+            } else {
+                Write-Output "`nDisable ASR ON $(($totalRunningVMs).count) VMs!"    
+            }
             
-            $totalRunningVMs | ForEach-Object {
-                if ($Mode -gt 0) {
-                    $VMEnabled = $true
-                    Write-Output "`nEnable ASR ON $(($totalRunningVMs).count) VMs!"
-                    Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $_.Name -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType}
+            if ([String]::IsNullOrEmpty($Rule)) {
+                # Invoke ALL the rules
+                $totalRunningVMs | ForEach-Object {
+                    Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType}
                     Start-Sleep -s 1
-                } else {
-                    Write-Output "`nDisable ASR ON $(($totalRunningVMs).count) VMs!"
-                    Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $_.Name -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType}
+                }
+            } else {
+                # Invoke specific rules
+                $totalRunningVMs | ForEach-Object {
+                    Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType;"Rule" = $Rule}
                     Start-Sleep -s 1
                 }
             }
-            $totalRunningVMs
-
+        
         } else {
         
             # Search VM's to ensure the specified VM(s) exists within the Resource Group!
             foreach ($vm in $VirtualMachine) {
                 foreach ($azureVM in $totalRunningVMs) {
+                    
+                    # Default ALL RULES enabled ..add logic to provide specific rules
                     if ($vm -eq $azureVM) {
+
                         if ($Mode -gt 0) { 
                             $VMEnabled = $true
                             Write-Output "Windows VM [$vm] is now ASR enabled!"
-                            Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType}
-
                         } else {
                             Write-Output "Windows VM [$vm] is now ASR disabled!"
-                            Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType}
                         }
-                        
+
+                        if ([String]::IsNullOrEmpty($Rule)) {
+                            # Invoke ALL the rules
+                            Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType}
+                            Start-Sleep -s 1
+                        } else {
+                            # Invoke specific rules
+                            Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType;"Rule" = $Rule}
+                            Start-Sleep -s 1
+                        }
                     } else {
                         #Write-Output "Your VM [$vm] could not be found, it may be sleeping :("
                     }   
