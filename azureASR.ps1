@@ -21,21 +21,20 @@ Use advanced protection against ransomware (GUID c1db55ab-c21a-4637-bb3f-a125681
 #>
 
 # MAYBE: Add Azure Subscriptions before iterating over Resource Groups
-
 function Enable-ASR {
     [CmdletBinding()] 
     Param (
         [Parameter(Mandatory = $true)]  
-        [String] $ResourceGroup = "",
+        [String] $ResourceGroup = $null,
         
         [Parameter(Mandatory = $false)] 
-        [String] $Rule = "",
+        [String] $Rule = $null,
         
         [Parameter(Mandatory = $true)]  
         [ValidateSet(0,1,2,6)] [int] $Mode = 2,
         
         [Parameter(Mandatory = $false)] 
-        [String[]] $VirtualMachine = "",
+        [String[]] $VirtualMachine = $null,
         
         [Parameter(Mandatory = $false)] 
         [Switch] $AllVMs = $false
@@ -148,16 +147,7 @@ function Enable-ASR {
                         Write-Output "Bro, your VM [$vm] cannot be found, it may be sleeping :("
                     }
 
-                    #TODO: Create log file and write results of each machine's ASR state
-                    $asr_ids = (Get-MpPreference).AttackSurfaceReductionRules_Ids
-                    $asr_mode = (Get-MpPreference).AttackSurfaceReductionRules_Actions
-
-                    $cntr = 0
-                    foreach ($id in $asr_ids) {
-                        #Add-MpPreference -AttackSurfaceReductionRules_Ids $id -AttackSurfaceReductionRules_Actions AuditMode
-                        Write-Output "ASR ID [$cntr]: $id <-> $($asr_mode[$cntr])"
-                        $cntr++
-                    }
+                    
                 }
             }   
         }
