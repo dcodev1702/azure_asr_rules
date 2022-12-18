@@ -28,7 +28,7 @@ function Enable-ASR {
         [String] $ResourceGroup = $null,
         
         [Parameter(Mandatory = $false)]
-        [String] $Rule = $null,
+        [String[]] $Rule = $null,
         
         [Parameter(Mandatory = $true)]
         [ValidateSet(0,1,2,6)] [int] $Mode = 2,
@@ -127,6 +127,7 @@ function Enable-ASR {
         }
 
         # If -All is toggled, loop through all running Windows VM's and enable/disable ASR accordingly
+        # Add logic for specific rules for All and Selected VM's
         if ($AllVMs) {
             
             $totalRunningVMs | ForEach-Object {
@@ -138,7 +139,7 @@ function Enable-ASR {
                 } else {
                     Write-Output "`nDisable ASR ON $(($totalRunningVMs).count) VMs!"
                     Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $_.Name -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType}
-                    Start-Sleep -s 2
+                    Start-Sleep -s 1
                 }
             }
             $totalRunningVMs
