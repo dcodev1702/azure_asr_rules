@@ -38,7 +38,7 @@ function Set-ASRRules {
     [CmdletBinding()] 
     Param (
         [Parameter(Mandatory = $true)]
-        [String] $ResourceGroup = $null,
+        [String] $ResourceGroup,
         
         [Parameter(Mandatory = $false)]
         [String] $Rule = $null,
@@ -114,11 +114,13 @@ function Set-ASRRules {
         )
         #>
         
+        
+        #$asr_rules_split = @()
         $asr_rules = @()
         if (Test-Path -Path $asr_rule_file) {
-            #$asr_rules = [System.IO.File]::ReadAllLines($asr_rule_file)
-            $asr_rules = Get-Content -Path $asr_rule_file
+            $asr_rules = [System.IO.File]::ReadAllLines($asr_rule_file)
             
+            $asr_rules | ForEach-Object { $asr_rules += $_.Split(',')[0] }            
         }
 
 
