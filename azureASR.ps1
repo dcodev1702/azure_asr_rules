@@ -152,11 +152,11 @@ function Enable-ASR {
                         if ($Mode -gt 0) { 
                             $VMEnabled = $true
                             Write-Output "Windows VM [$vm] is now ASR enabled!"
-                            Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $_.Name -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType}
+                            Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType}
 
                         } else {
                             Write-Output "Windows VM [$vm] is now ASR disabled!"
-                            Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $_.Name -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType}
+                            Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType}
                         }
                         
                     } else {

@@ -30,7 +30,6 @@ $asr_rules = @(
     'c1db55ab-c21a-4637-bb3f-a12568109d35'  # Use advanced protection against ransomware
 )
     
-
     
 $cntr = 0
 $Rules = @()
