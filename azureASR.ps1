@@ -110,6 +110,23 @@ function Enable-ASR {
             6 { $ModeType = "Warn" }
         }
 
+        # If specific rules have been provided, validate them before proceeding
+        if (-not ([String]::IsNullOrEmpty($Rule))) {
+            $tmpRules = @()
+            $tmpRules = $Rule.Split(',')
+            Write-Host "USER RULE: $tmpRules" -ForegroundColor Yellow
+            $tmpRules | Where-Object { 
+                $_ -notin $asr_rules;
+                Write-Host "!!! Rule `"$_`" could not be found. Please correct your ASR Rule, goodbye :|" -ForegroundColor Red; 
+                Exit 4;
+                
+                #if ($tmpRules.count -gt 1) {
+                #    Write-Host "!!! Rules `"$_`" could not be found. Please correct your ASR Rules, goodbye :|" -ForegroundColor Red ; 
+                #    Exit 4;
+                #}
+            }
+        }
+
         # Get list of registered Windows VM's in Azure & Azure ARC
         $azure_vms = Get-AzVM -Status
         $arc_vms = Get-AzConnectedMachine   
@@ -133,6 +150,15 @@ function Enable-ASR {
                 Write-Output "Azure ARC VM: $($_.Name)"
             }
         }
+
+        # If -VirtualMachine is selected, check to see if user provided VM's are 
+        # in $totalRunningVMs before ASR rule application/consideration
+        $VirtualMachine | Where-Object { 
+            $_ -notin $totalRunningVMs; 
+            Write-Host "!!! `"$_`" could not be found !!! [$_] might be sleeping, goodbye :|" -ForegroundColor Red; 
+            Exit 3;
+        }
+
 
         # If -All is toggled, loop through all running Windows VM's and enable/disable ASR accordingly
         # Add logic for specific rules for All and Selected VM's
@@ -162,12 +188,15 @@ function Enable-ASR {
         } else {
         
             # Search VM's to ensure the specified VM(s) exists within the Resource Group!
+            $liveAzVMs = @()
             foreach ($vm in $VirtualMachine) {
                 foreach ($azureVM in $totalRunningVMs) {
                     
                     # Default ALL RULES enabled ..add logic to provide specific rules
                     if ($vm -eq $azureVM) {
 
+                        # found a VM!
+                        $liveAzVMs += $vm
                         if ($Mode -gt 0) { 
                             $VMEnabled = $true
                             Write-Output "Windows VM [$vm] is now ASR enabled!"
@@ -180,16 +209,14 @@ function Enable-ASR {
                             Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType}
                             Start-Sleep -s 1
                         } else {
-                            # Invoke specific rules
+                            # Invoke specific rules after they've been validated
                             $parameters = @{ "Mode" = $ModeType; "Rule" = $Rule }
                             Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter $parameters
                             Start-Sleep -s 1
                         }
-                    } else {
-                        #Write-Output "Your VM [$vm] could not be found, it may be sleeping :("
-                    }   
+                    }
                 }
-            }   
+            }             
         }
     }
 
