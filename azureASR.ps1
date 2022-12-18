@@ -167,8 +167,8 @@ function Enable-ASR {
         }
 
 
-        # If -All is toggled, loop through all running Windows VM's and enable/disable ASR accordingly
-        # Add logic for specific rules for All and Selected VM's
+        # If -All is toggled, loop through all running Windows VM's and enable/disable
+        # ASR accordingly.
         if ($AllVMs) {
 
             if ($Mode -gt 0) {
