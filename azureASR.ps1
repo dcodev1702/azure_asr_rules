@@ -98,8 +98,7 @@ function Enable-ASR {
 
         # Get list of Windows VM's in Azure & Azure ARC
         $azure_vms = Get-AzVM -Status
-        $arc_vms = Get-AzConnectedMachine
-        
+        $arc_vms = Get-AzConnectedMachine   
     }
     
     Process {
@@ -133,6 +132,7 @@ function Enable-ASR {
 
         } else {
 
+            # Search VM's to ensure the VM provided exists within the Resource Group!
             foreach ($vm in $VirtualMachine) {
                 foreach ($azureVM in $totalVMs) {
                     if ($vm -eq $azureVM) {
@@ -144,17 +144,15 @@ function Enable-ASR {
                         }
                         
                     } else {
-                        Write-Output "Bro, your VM [$vm] cannot be found, it may be sleeping :("
-                    }
-
-                    
+                        #Write-Output "Your VM [$vm] could not be found, it may be sleeping :("
+                    }   
                 }
             }   
         }
     }
 
     End {
-        
+
         if ($VMEnabled) {
             Write-Output "`nThank you for enabling Attack Surface Reduction!"
         }
