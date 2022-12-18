@@ -58,7 +58,7 @@ if ([String]::IsNullOrEmpty($Rule)) {
     }
 }
         
-#TODO: Create log file and write results of each machine's ASR state
+# Log and write results of each machine's ASR state
 $asr_ids = (Get-MpPreference).AttackSurfaceReductionRules_Ids
 $asr_mode = (Get-MpPreference).AttackSurfaceReductionRules_Actions
 
