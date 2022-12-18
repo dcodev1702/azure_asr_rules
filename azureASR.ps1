@@ -49,6 +49,7 @@ function Enable-ASR {
             'Az.Compute',
             'Az.ConnectedMachine'
         )
+        
         Write-Host "Installing/Importing PowerShell modules..." -ForegroundColor Green
         $modulesToInstall | ForEach-Object {
             if (-not (Get-Module -ListAvailable $_)) {
