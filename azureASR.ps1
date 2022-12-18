@@ -58,6 +58,8 @@ function Set-ASRRules {
 
     Begin {
 
+        $asr_rule_file = "C:\Users\Lorenzo\Documents\azure_asr_rules\asr_rules.txt"
+
         # Use a flag -CheckAzModules to enable checking of required modules
         if ($CheckAzModules) {
 
@@ -91,6 +93,7 @@ function Set-ASRRules {
 
         # List of ASR Rules - Dated 18 DEC 2022
         # https://github.com/MicrosoftDocs/microsoft-365-docs/blob/public/microsoft-365/security/defender-endpoint/attack-surface-reduction-rules-reference.md
+        <#
         $asr_rules = @(
             '56a863a9-875e-4185-98a7-b882c64b5ce5', # Block abuse of vuln signed drivers
             '7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c', # Block Adobe Reader from creating child processes
@@ -109,6 +112,15 @@ function Set-ASRRules {
             '92e97fa1-2edf-4476-bdd6-9dd0b4dddc7b', # Block Win32 API calls from Office macros
             'c1db55ab-c21a-4637-bb3f-a12568109d35'  # Use advanced protection against ransomware
         )
+        #>
+        
+        if (Test-Path -Path $asr_rule_file) {
+            $asr_rules = @()
+            #$asr_rules = [System.IO.File]::ReadAllLines($asr_rule_file)
+            $asr_rules = Get-Content -Path $asr_rule_file
+            
+        }
+
 
         [bool]$VMEnabled = $false
         [String]$ModeType = ""
