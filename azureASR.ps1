@@ -141,7 +141,7 @@ function Enable-ASR {
     Process {
         Write-Output("$ResourceGroup : ASR -> $ModeType on Host: $VirtualMachine")
 
-        # Get list of RUNNING VM's within the registered list of Windows VM's.
+        # Get a list of RUNNING VM's within the registered list of Windows VM's (Azure VM & Azure ARC Servers).
         $totalRunningVMs = @()
         $azure_vms | ForEach-Object {
             if($_.StorageProfile.OsDisk.OsType -eq 'Windows' -and $_.PowerState -eq 'VM running') {
