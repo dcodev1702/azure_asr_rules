@@ -33,13 +33,14 @@ $asr_rules = @(
     'c1db55ab-c21a-4637-bb3f-a12568109d35'  # Use advanced protection against ransomware
 )
 
-    
+
+New-Item -Path 'C:\tmp\' -ItemType Directory | Out-Null
 [String]$file = "C:\tmp\asr_debug.txt"
 [int]$cntr = 0
 $Rules = @()
 $Rules = $Rule.Split(',')
 $Rules | ForEach-Object {
-    Write-Output "RULES FROM RUN_ASR() -> $_" | Out-File -FilePath $file -Append
+    Write-Output "$(Get-Date -Format G) :: ASR RULES :: $_ -> MODE [$Mode]" | Out-File -FilePath $file -Append
 }
 
 if ([String]::IsNullOrEmpty($Rule)) {
