@@ -14,7 +14,7 @@ Param (
     [String] $Rule = $null
 )
 
-
+<#
 $asr_rules = @(
     '56a863a9-875e-4185-98a7-b882c64b5ce5', # Block abuse of vuln signed drivers
     '7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c', # Block Adobe Reader from creating child processes
@@ -33,6 +33,14 @@ $asr_rules = @(
     '92e97fa1-2edf-4476-bdd6-9dd0b4dddc7b', # Block Win32 API calls from Office macros
     'c1db55ab-c21a-4637-bb3f-a12568109d35'  # Use advanced protection against ransomware
 )
+#>
+
+$asr_rules = @()
+if (Test-Path -Path $asr_rule_file) {
+    $asr_rules = [System.IO.File]::ReadAllLines($asr_rule_file)
+    
+    $asr_rules | ForEach-Object { $asr_rules += $_.Split(',')[0] }            
+}
     
 [String]$file = "C:\tmp\asr_debug.txt"
 [int]$cntr = 0

@@ -114,8 +114,6 @@ function Set-ASRRules {
         )
         #>
         
-        
-        #$asr_rules_split = @()
         $asr_rules = @()
         if (Test-Path -Path $asr_rule_file) {
             $asr_rules = [System.IO.File]::ReadAllLines($asr_rule_file)
