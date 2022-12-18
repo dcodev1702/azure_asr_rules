@@ -131,23 +131,9 @@ function Enable-ASR {
                 } 
             }
         }
-        <#if (-not ([String]::IsNullOrEmpty($Rule))) {
-            $tmpRules = @()
-            $tmpRules = $Rule.Split(',')
-            Write-Host "USER RULE: $tmpRules" -ForegroundColor Yellow
-            $Rule | Where-Object { 
-                $_ -notin $asr_rules;
-                Write-Host "!!! Rule `"$_`" could not be found. Please correct your ASR Rule, goodbye :|" -ForegroundColor Red; 
-                Exit 4;
-                
-                #if ($tmpRules.count -gt 1) {
-                #    Write-Host "!!! Rules `"$_`" could not be found. Please correct your ASR Rules, goodbye :|" -ForegroundColor Red ; 
-                #    Exit 4;
-                #}
-            }
-        }#>
+        
 
-        # Get list of registered Windows VM's in Azure & Azure ARC
+        # Query Azure subscription and get list of registered Windows VM's in Azure & Azure ARC
         $azure_vms = Get-AzVM -Status
         $arc_vms = Get-AzConnectedMachine   
     }
