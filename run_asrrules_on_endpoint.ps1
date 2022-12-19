@@ -65,7 +65,7 @@ Process {
         $asr_rule_cnt = $($Rules).count; $asrRules = $Rules 
     }
 
-    Write-Host "[$env:COMPUTERNAME] ::: Applying $asr_rule_cnt ASR Rules -> MODE::[$Mode] to the Endpoint" | Out-File -FilePath $file -Append
+    Write-Output "[$env:COMPUTERNAME] ::: Applying $asr_rule_cnt ASR Rules -> MODE::[$Mode] to the Endpoint" | Out-File -FilePath $file -Append
     $asrRules | ForEach-Object {
         Add-MpPreference -AttackSurfaceReductionRules_Ids $_ -AttackSurfaceReductionRules_Actions $Mode
     }
