@@ -143,13 +143,32 @@ function Set-ASRRules {
         $tmpRules = $Rule.Split(',')
 
         if (-not ([String]::IsNullOrEmpty($Rule))) {
+            
+            
+            <#
+            # Validating current mode setting is unique requested mode
+            $rule_mode = 0
+            $asr_ids = (Get-MpPreference).AttackSurfaceReductionRules_Ids
+            $asr_ids | ForEach-Object {
+                foreach ($id in $tmpRules) {
+                    if ($_ -eq $id) {
+                        $asr_mode = (Get-MpPreference).AttackSurfaceReductionRules_Actions[$rule_mode]
+                    }
+                    $rule_mode++
+                }
+            }
+            #>
+
             $tmpRules | Where-Object -FilterScript { 
+                
                 if($_ -notin $asr_rules) { 
                     Write-Host "User provided Rule: $_ NOT FOUND!" -ForegroundColor Yellow
                     Exit 4
                 } else {
-                    Write-Host "User provided Rule: $_ located, processing..." -ForegroundColor Green
+                    # Log and write results of each machine's ASR state
+                    Write-Host "User provided Rule:[$_] -and Mode:[TODO] located, processing..." -ForegroundColor Green
                 }
+                
             }
         }
         
