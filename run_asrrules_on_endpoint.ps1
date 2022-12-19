@@ -60,9 +60,9 @@ Process {
     $asr_rule_cnt = 0
     $asrRules = @()
     if ([String]::IsNullOrEmpty($Rule)) {
-        $asr_rule_cnt = $(asr_rules).count; $asrRules = $asr_rules
+        $asr_rule_cnt = $($asr_rules).count; $asrRules = $asr_rules
     } else { 
-        $asr_rule_cnt = $(Rules).count; $asrRules = $Rules 
+        $asr_rule_cnt = $($Rules).count; $asrRules = $Rules 
     }
 
     Write-Host "[$env:COMPUTERNAME] ::: Applying $asr_rule_cnt ASR Rules -> MODE::[$Mode] to the Endpoint" | Out-File -FilePath $file -Append
