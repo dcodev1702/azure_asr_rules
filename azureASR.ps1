@@ -12,8 +12,14 @@
     ------
     Enable ALL VMs:       
         CMD: Set-ASRRules -ResourceGroup 'VMTESTRG' -Mode 2 -All
+    
     Enable specified VMs: 
         CMD: Set-ASRRules -ResourceGroup 'VMTESTRG' -Mode 2 -VirtualMachine 'Host-1','Host-2','Host-3'
+    
+    Enable specified VMs and user provided rule:
+        CMD: Set-ASRRules -ResourceGroup 'VMTESTRG' -Mode 0 -VirtualMachine 'WinZo10-VM-ENT','WinZo10-VM3-ENT' \
+        -Rule 'c1db55ab-c21a-4637-bb3f-a12568109d35'
+    
     Enable specified Rules: 
         CMD: Set-ASRRules -ResourceGroup 'VMTESTRG' -Mode 6 -VirtualMachine 'WinZo10-VM-ENT' \
         -Rule "9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2,01443614-cd74-433a-b99e-2ecdc07bfc25,d1e49aac-8f56-4280-b9ba-993a6d77406c"
@@ -181,7 +187,7 @@ function Set-ASRRules {
                     Write-Host "User provided VM: $_ could not be found! [$_] might be sleeping, goodbye :|" -ForegroundColor Red
                     Exit 4
                 } else {
-                    Write-Host "User provided VM: $_ was located!" -ForegroundColor Green
+                    Write-Host "User provided VM: $_ was successfully located!" -ForegroundColor Green
                 }
             }
         }
@@ -249,7 +255,7 @@ function Set-ASRRules {
     End {
 
         if ($VMEnabled) {
-            Write-Output "`nThank you for enabling Attack Surface Reduction!"
+            Write-Host "`nThank you for enabling Attack Surface Reduction!" -ForegroundColor Green
         }
     }
 }
