@@ -58,7 +58,8 @@ function Set-ASRRules {
 
     Begin {
 
-        $asr_rule_file = "C:\Users\Lorenzo\Documents\azure_asr_rules\asr_rules.txt"
+        $asrRuleFile = 'asr_rules.txt'
+        $asr_rule_file = "$(Get-Location)\$asrRuleFile"
 
         # Use a flag -CheckAzModules to enable checking of required modules
         if ($CheckAzModules) {
@@ -194,14 +195,14 @@ function Set-ASRRules {
             if ([String]::IsNullOrEmpty($Rule)) {
                 # Invoke ALL the rules
                 $totalRunningVMs | ForEach-Object {
-                    $parameters = @{"Mode" = $ModeType}
+                    $parameters = @{ "Mode" = $ModeType }
                     Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters
                     Start-Sleep -s 1
                 }
             } else {
                 # Invoke specific rules
                 $totalRunningVMs | ForEach-Object {
-                    $parameters = @{"Mode" = $ModeType;"Rule" = $Rule}
+                    $parameters = @{ "Mode" = $ModeType; "Rule" = $Rule }
                     Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters
                     Start-Sleep -s 1
                 }
@@ -225,7 +226,8 @@ function Set-ASRRules {
 
                         if ([String]::IsNullOrEmpty($Rule)) {
                             # Invoke ALL the rules
-                            Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter @{"Mode" = $ModeType}
+                            $parameters = @{ "Mode" = $ModeType }
+                            Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters
                         } else {
                             # Invoke specific validated rules
                             $parameters = @{ "Mode" = $ModeType; "Rule" = $Rule }
