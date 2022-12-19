@@ -195,14 +195,14 @@ function Set-ASRRules {
                 # Invoke ALL the rules
                 $totalRunningVMs | ForEach-Object {
                     $parameters = @{"Mode" = $ModeType}
-                    Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter $parameters
+                    Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters
                     Start-Sleep -s 1
                 }
             } else {
                 # Invoke specific rules
                 $totalRunningVMs | ForEach-Object {
                     $parameters = @{"Mode" = $ModeType;"Rule" = $Rule}
-                    Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter $parameters
+                    Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters
                     Start-Sleep -s 1
                 }
             }
@@ -225,11 +225,11 @@ function Set-ASRRules {
 
                         if ([String]::IsNullOrEmpty($Rule)) {
                             # Invoke ALL the rules
-                            Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType}
+                            Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter @{"Mode" = $ModeType}
                         } else {
                             # Invoke specific validated rules
                             $parameters = @{ "Mode" = $ModeType; "Rule" = $Rule }
-                            Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter $parameters
+                            Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters
                         }
                         Start-Sleep -s 1
                     }
