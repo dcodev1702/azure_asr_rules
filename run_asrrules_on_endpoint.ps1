@@ -51,7 +51,7 @@ Begin {
     $Rules = @()
     $Rules = $Rule.Split(',')
     $Rules | ForEach-Object {
-        Write-Output "$(Get-Date -Format G) :: ASR RULES :: $_ -> MODE [$Mode]" | Out-File -FilePath $file -Append
+        Write-Output "$(Get-Date -Format G) :: HELPER SCRIPT | ASR RULES :: $_ -> MODE [$Mode]" | Out-File -FilePath $file -Append
     }
 }
 
