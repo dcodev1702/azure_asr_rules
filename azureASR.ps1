@@ -208,15 +208,12 @@ function Set-ASRRules {
         } else {
         
             # Search VM's to ensure the specified VM(s) exists within the Resource Group!
-            $liveAzVMs = @()
             foreach ($vm in $VirtualMachine) {
                 foreach ($azureVM in $totalRunningVMs) {
                     
                     # Default ALL RULES enabled ..add logic to provide specific rules
                     if ($vm -eq $azureVM) {
 
-                        # found a VM!
-                        $liveAzVMs += $vm
                         if ($Mode -gt 0) { 
                             $VMEnabled = $true
                             Write-Output "Windows VM [$vm] is now ASR enabled!"
