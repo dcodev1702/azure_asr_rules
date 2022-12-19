@@ -194,13 +194,15 @@ function Set-ASRRules {
             if ([String]::IsNullOrEmpty($Rule)) {
                 # Invoke ALL the rules
                 $totalRunningVMs | ForEach-Object {
-                    Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType}
+                    $parameters = @{"Mode" = $ModeType}
+                    Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter $parameters
                     Start-Sleep -s 1
                 }
             } else {
                 # Invoke specific rules
                 $totalRunningVMs | ForEach-Object {
-                    Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType;"Rule" = $Rule}
+                    $parameters = @{"Mode" = $ModeType;"Rule" = $Rule}
+                    Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter $parameters
                     Start-Sleep -s 1
                 }
             }
