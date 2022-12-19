@@ -143,21 +143,6 @@ function Set-ASRRules {
         $tmpRules = $Rule.Split(',')
 
         if (-not ([String]::IsNullOrEmpty($Rule))) {
-            
-            # Validating current mode setting is unique requested mode
-            # The Logic works but it has to be ran on the REMOTE ENDPOINT!
-            $rule_mode = 0
-            $asr_ids = (Get-MpPreference).AttackSurfaceReductionRules_Ids
-            $asr_mode = (Get-MpPreference).AttackSurfaceReductionRules_Actions
-            $asr_ids | ForEach-Object {
-                foreach ($id in $tmpRules) {
-                    if ($_ -eq $id) {
-                        Write-Host "Rule: $_ -> Mode:[$($asr_mode[$rule_mode])]" -ForegroundColor Green
-                    }
-                }
-                $rule_mode++
-            }
-            
 
             $tmpRules | Where-Object -FilterScript { 
                 
@@ -166,9 +151,8 @@ function Set-ASRRules {
                     Exit 4
                 } else {
                     # Log and write results of each machine's ASR state
-                    Write-Host "User provided Rule:[$_] -and Mode:[TODO] located, processing..." -ForegroundColor Green
+                    Write-Host "User provided Rule:[$_] located, processing..." -ForegroundColor Green
                 }
-                
             }
         }
         
