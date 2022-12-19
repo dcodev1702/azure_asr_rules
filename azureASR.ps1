@@ -172,14 +172,14 @@ function Set-ASRRules {
         $azure_vms | ForEach-Object {
             if($_.StorageProfile.OsDisk.OsType -eq 'Windows' -and $_.PowerState -eq 'VM running') {
                 $totalRunningVMs += $_.Name
-                Write-Output "Azure VM: $($_.Name)"
+                Write-Output "Running Azure Windows VM: $($_.Name)"
             } 
         }
 
         $arc_vms | ForEach-Object {
             if($_.Status -eq 'Connected' -and $_.OsType -eq 'windows') {
                 $totalRunningVMs += $_.Name
-                Write-Output "Azure ARC VM: $($_.Name)"
+                Write-Output "Running Azure ARC Windows Server: $($_.Name)"
             }
         }
 
