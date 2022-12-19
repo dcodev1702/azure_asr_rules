@@ -154,7 +154,8 @@ function Set-ASRRules {
     }
     
     Process {
-        Write-Output("$ResourceGroup : ASR -> $ModeType on Host: $VirtualMachine")
+
+        Write-Output("RG: $ResourceGroup : ASR -> $ModeType on Host: $VirtualMachine")
 
         # Get a list of RUNNING VM's within the registered list of Windows VM's (Azure VM & Azure ARC Servers).
         $totalRunningVMs = @()
@@ -179,16 +180,12 @@ function Set-ASRRules {
                 if($_ -notin $totalRunningVMs) { 
                     Write-Host "User provided VM: $_ could not be found! [$_] might be sleeping, goodbye :|" -ForegroundColor Red
                     Exit 4
-                } 
+                } else {
+                    Write-Host "User provided VM: $_ was located!" -ForegroundColor Green
+                }
             }
         }
-        <#$VirtualMachine | Where-Object { 
-            $_ -notin $totalRunningVMs; 
-            Write-Host "!!! `"$_`" could not be found !!! [$_] might be sleeping, goodbye :|" -ForegroundColor Red; 
-            Exit 3;
-        }
-        #>
-
+        
 
         # If -All is toggled, loop through all running Windows VM's and enable/disable
         # ASR accordingly.
