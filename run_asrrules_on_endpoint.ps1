@@ -1,5 +1,5 @@
 <#
-Name: run_asr.ps1 [Helper Script]
+Name: run_asrrules_on_endpoint.ps1 [Helper Script]
 Author: Lorenzo J. Ireland
 Date: 17 Dec 2022
 
@@ -62,8 +62,6 @@ Process {
         Write-Host "[$env:COMPUTERNAME] ::: Applying $(($asr_rules).count) ASR Rules -> MODE::[$Mode] to the Endpoint" | Out-File -FilePath $file -Append
         $asr_rules | ForEach-Object {
             Add-MpPreference -AttackSurfaceReductionRules_Ids $_ -AttackSurfaceReductionRules_Actions $Mode
-            Write-Host "Rule[$cntr]: $_ -> Mode: $Mode" -ForegroundColor Yellow
-            $cntr++
         }
     } else {
 
