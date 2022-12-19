@@ -29,7 +29,7 @@
         -Rule "7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c,d4f940ab-401b-4efc-aadc-ad5f3c50688b"
 
     TODO:
-    -- Validate more than one bad user defined VM can be found.
+    -- Validate Mode setting for a set of rules or specified rule requires setting!
 ###########################################################>
 <#
 Warn mode isn't supported for three attack surface reduction rules when you configure them in Microsoft Endpoint Manager. (If you use Group Policy to configure your attack surface reduction rules, warn mode is supported.) The three rules that do not support warn mode when you configure them in Microsoft Endpoint Manager are as follows:
