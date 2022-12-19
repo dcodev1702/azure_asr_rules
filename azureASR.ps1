@@ -224,13 +224,12 @@ function Set-ASRRules {
                         if ([String]::IsNullOrEmpty($Rule)) {
                             # Invoke ALL the rules
                             Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter @{"Mode" = $ModeType}
-                            Start-Sleep -s 1
                         } else {
                             # Invoke specific validated rules
                             $parameters = @{ "Mode" = $ModeType; "Rule" = $Rule }
                             Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asr.ps1 -Parameter $parameters
-                            Start-Sleep -s 1
                         }
+                        Start-Sleep -s 1
                     }
                 }
             }             
