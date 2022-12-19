@@ -121,6 +121,7 @@ function Set-ASRRules {
         )
         #>
         
+        # Obtain current ASR rules from a file and store in an array (asr_rules)
         $asr_rules = @()
         if (Test-Path -Path $asr_rule_file) {
             $asr_rules_from_file = [System.IO.File]::ReadAllLines($asr_rule_file)
