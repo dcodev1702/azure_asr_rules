@@ -144,20 +144,20 @@ function Set-ASRRules {
 
         if (-not ([String]::IsNullOrEmpty($Rule))) {
             
-            
-            <#
             # Validating current mode setting is unique requested mode
+            # The Logic works but it has to be ran on the REMOTE ENDPOINT!
             $rule_mode = 0
             $asr_ids = (Get-MpPreference).AttackSurfaceReductionRules_Ids
+            $asr_mode = (Get-MpPreference).AttackSurfaceReductionRules_Actions
             $asr_ids | ForEach-Object {
                 foreach ($id in $tmpRules) {
                     if ($_ -eq $id) {
-                        $asr_mode = (Get-MpPreference).AttackSurfaceReductionRules_Actions[$rule_mode]
+                        Write-Host "Rule: $_ -> Mode:[$($asr_mode[$rule_mode])]" -ForegroundColor Green
                     }
-                    $rule_mode++
                 }
+                $rule_mode++
             }
-            #>
+            
 
             $tmpRules | Where-Object -FilterScript { 
                 
