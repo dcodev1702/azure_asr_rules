@@ -57,18 +57,17 @@ Begin {
 
 Process {
 
+    $asr_rule_cnt = 0
+    $asrRules = @()
     if ([String]::IsNullOrEmpty($Rule)) {
-    
-        Write-Host "[$env:COMPUTERNAME] ::: Applying $(($asr_rules).count) ASR Rules -> MODE::[$Mode] to the Endpoint" | Out-File -FilePath $file -Append
-        $asr_rules | ForEach-Object {
-            Add-MpPreference -AttackSurfaceReductionRules_Ids $_ -AttackSurfaceReductionRules_Actions $Mode
-        }
-    } else {
+        $asr_rule_cnt = $(asr_rules).count; $asrRules = $asr_rules
+    } else { 
+        $asr_rule_cnt = $(Rules).count; $asrRules = $Rules 
+    }
 
-        Write-Host "[$env:COMPUTERNAME] ::: Applying $(($Rules).count) ASR Rules -> MODE::[$Mode] to the Endpoint" | Out-File -FilePath $file -Append
-        $Rules | ForEach-Object {
-            Add-MpPreference -AttackSurfaceReductionRules_Ids $_ -AttackSurfaceReductionRules_Actions $Mode
-        }
+    Write-Host "[$env:COMPUTERNAME] ::: Applying $asr_rule_cnt ASR Rules -> MODE::[$Mode] to the Endpoint" | Out-File -FilePath $file -Append
+    $asrRules | ForEach-Object {
+        Add-MpPreference -AttackSurfaceReductionRules_Ids $_ -AttackSurfaceReductionRules_Actions $Mode
     }
 }
 
