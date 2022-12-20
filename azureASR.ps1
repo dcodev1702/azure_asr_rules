@@ -29,7 +29,7 @@
         -Rule "7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c,d4f940ab-401b-4efc-aadc-ad5f3c50688b"
 
     TODO:
-    -- Enhance error handling, logging, and STDOUT messages
+    -- Enhance error handling (input validation), logging, and STDOUT messages
 
     WORKS CITED:
     -- Azure Authentication and Module code comes from:
@@ -237,8 +237,7 @@ function Set-ASRRules {
         }
         
 
-        # If -All is toggled, loop through all running Windows VM's and enable/disable
-        # ASR accordingly.
+        # If -All is toggled, loop through all running Windows VM's and enable/disable ASR accordingly.
         if ($AllVMs) {
 
             if ($Mode -gt 0) {
