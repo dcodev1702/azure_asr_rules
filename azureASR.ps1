@@ -47,7 +47,7 @@ Use advanced protection against ransomware (GUID c1db55ab-c21a-4637-bb3f-a125681
 
 function Get-AzureSubscription() {
     # Check to see if Resource Group specified exists within the provided Azure Subscription
-    Write-Host "`r`nYou will now be asked to log in to your Azure environment if a session does not already exist. `nFor this script to work correctly, you need to provide credentials of a Global Admin or Security Admin for your organization. `nThis will allow the script to interact with Azure as required.`r`n" -BackgroundColor Magenta
+    Write-Host "`r`nYou will be asked to log in to your Azure environment if a session does not already exist. `nGlobal Admin or Security Admin credentials are required. `nThis will allow the script to interact with Azure as required.`r`n" -BackgroundColor Magenta
 
     Read-Host -Prompt "Press enter to continue or CTRL+C to quit the script" 
 
@@ -289,9 +289,9 @@ function Set-ASRRules {
     End {
 
         if ($VMEnabled) {
-            Write-Host "`nEndpoint successfully hardened with Attack Surface Reduction!" -ForegroundColor Green
+            Write-Host "`nEndpoint successfully hardened with Attack Surface Reduction!`n" -ForegroundColor Green
         } else {
-            Write-Host "Attack Surface Reduction rule(s) successfully `"DISABLED`"..." -ForegroundColor Yellow
+            Write-Host "`nAttack Surface Reduction rule(s) successfully `"DISABLED`"...`n" -ForegroundColor Yellow
         }
     }
 }
