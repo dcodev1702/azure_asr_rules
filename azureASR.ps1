@@ -205,8 +205,6 @@ function Set-ASRRules {
     
     Process {
 
-        Write-Host "`nRG:[$ResourceGroup] ASR:[$ModeType] -> Host:[$VirtualMachine]" -ForegroundColor Magenta
-
         # Get a list of RUNNING VM's within the registered list of Windows VM's (Azure VM & Azure ARC Servers).
         $totalRunningVMs = @()
         $azure_vms | ForEach-Object {
@@ -234,6 +232,7 @@ function Set-ASRRules {
                     Write-Host "`n[3] Virtual Machine:[$_] was successfully located..." -ForegroundColor Green
                 }
             }
+            Write-Host "`nRG:[$ResourceGroup] ASR:[$ModeType] -> Host:[$VirtualMachine]" -ForegroundColor Magenta
         }
         
 
@@ -257,7 +256,7 @@ function Set-ASRRules {
             }
 
             $totalRunningVMs | ForEach-Object {
-                Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters # | Out-Null
+                Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters | Out-Null
                 Start-Sleep -s 1
             }
         
@@ -279,7 +278,7 @@ function Set-ASRRules {
                             # Invoke specific validated rules
                             $parameters = @{ "Mode" = $ModeType; "Rule" = $Rule }
                         }
-                        Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters # | Out-Null
+                        Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters | Out-Null
                         Start-Sleep -s 1
                     }
                 }
