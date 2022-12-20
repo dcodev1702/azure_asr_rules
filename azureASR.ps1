@@ -128,7 +128,7 @@ function Set-ASRRules {
         Get-AzureSubscription
 
         #Check Resource Group Existing or not
-        Get-AzResourceGroup -Name $ResourceGroup -ErrorVariable RGNotPresent -ErrorAction SilentlyContinue
+        Get-AzResourceGroup -Name $ResourceGroup -ErrorVariable RGNotPresent -ErrorAction SilentlyContinue | Out-Null
         
         if ($RGNotPresent){        
             Write-Host "ResourceGroup `"$($ResourceGroup)`" associated to your Azure subscription was not found..." -ForegroundColor Red
@@ -205,7 +205,7 @@ function Set-ASRRules {
     
     Process {
 
-        Write-Host "RG:[$ResourceGroup] ASR:[$ModeType] -> Host:[$VirtualMachine]" -ForegroundColor Magenta
+        Write-Host "`nRG:[$ResourceGroup] ASR:[$ModeType] -> Host:[$VirtualMachine]" -ForegroundColor Magenta
 
         # Get a list of RUNNING VM's within the registered list of Windows VM's (Azure VM & Azure ARC Servers).
         $totalRunningVMs = @()
