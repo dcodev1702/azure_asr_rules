@@ -263,6 +263,7 @@ function Set-ASRRules {
         } else {
         
             # Search VM's to ensure the specified VM(s) exists within the Resource Group!
+            Write-Host "`n[4] Total Virtual Machines:[$(($VirtualMachine).count)] to apply ASR rules against..." -ForegroundColor Magenta
             foreach ($vm in $VirtualMachine) {
                 foreach ($azureVM in $totalRunningVMs) {
                     
