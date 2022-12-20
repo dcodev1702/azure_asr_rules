@@ -43,6 +43,7 @@ Block persistence through WMI event subscription (GUID e6db77e5-3df2-4cf1-b95a-6
 Use advanced protection against ransomware (GUID c1db55ab-c21a-4637-bb3f-a12568109d35)
 #>
 
+# This feature requires PS >= 4.0
 #Requires -RunAsAdministrator
 
 function Get-AzureSubscription() {
@@ -197,8 +198,7 @@ function Set-ASRRules {
             }
         }
         
-
-        # Query Azure subscription and get list of registered Windows VM's in Azure & Azure ARC
+        # Query Azure subscription and get list of all registered Windows VM's in Azure & Azure ARC
         $azure_vms = Get-AzVM -Status
         $arc_vms = Get-AzConnectedMachine   
     }
