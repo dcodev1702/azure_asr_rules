@@ -47,7 +47,7 @@ Use advanced protection against ransomware (GUID c1db55ab-c21a-4637-bb3f-a125681
 
 function Get-AzureSubscription() {
     # Check to see if Resource Group specified exists within the provided Azure Subscription
-    Write-Host "`r`nYou will now be asked to log in to your Azure environment if a session does not already exist. `nFor this script to work correctly, you need to provide credentials of a Global Admin or Security Admin for your organization. `nThis will allow the script to enable all required connectors.`r`n" -BackgroundColor Magenta
+    Write-Host "`r`nYou will now be asked to log in to your Azure environment if a session does not already exist. `nFor this script to work correctly, you need to provide credentials of a Global Admin or Security Admin for your organization. `nThis will allow the script to interact with Azure as required.`r`n" -BackgroundColor Magenta
 
     Read-Host -Prompt "Press enter to continue or CTRL+C to quit the script" 
 
@@ -132,10 +132,10 @@ function Set-ASRRules {
         
         if ($RGNotPresent){        
             Write-Host "ResourceGroup `"$($ResourceGroup)`" associated to your Azure subscription was not found..." -ForegroundColor Red
-            Write-Host "Exiting, goodbye......." -ForegroundColor Red
+            Write-Host "Exiting, goodbye..." -ForegroundColor Red
             break
         } else {
-            Write-Host "Resource Group:[$ResourceGroup] successfully located..." -ForegroundColor Green
+            Write-Host "[1] Resource Group:[$ResourceGroup] successfully located..." -ForegroundColor Green
         }
 
         # List of ASR Rules - Dated 18 DEC 2022
@@ -192,7 +192,7 @@ function Set-ASRRules {
                     break
                 } else {
                     # Log and write results of each machine's ASR state
-                    Write-Host "`nASR Rule:[$_] located, processing..." -ForegroundColor Green
+                    Write-Host "`n[2] ASR Rule:[$_] located, processing..." -ForegroundColor Green
                 }
             }
         }
@@ -231,7 +231,7 @@ function Set-ASRRules {
                     Write-Host "`nVirtual Machine:[$_] could not be found! [$_] might be sleeping, goodbye :|" -ForegroundColor Red
                     break
                 } else {
-                    Write-Host "`nVirtual Machine:[$_] was successfully located!" -ForegroundColor Green
+                    Write-Host "`n[3] Virtual Machine:[$_] was successfully located..." -ForegroundColor Green
                 }
             }
         }
