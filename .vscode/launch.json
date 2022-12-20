@@ -5,12 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "PowerShell Interactive Session",
+            "type": "PowerShell",
+            "request": "launch",
+            "cwd": "${cwd}"
+        },
+        {
             "name": "PowerShell: Launch Current File",
             "type": "PowerShell",
             "request": "launch",
-            "script": "${file}",
-            "args": ["Set-ASRRules", "-ResourceGroup", "VMTESTRG", "-Mode", "0", "-VirtualMachine", "WinZo10-VM3-ENT", 
-            "-Rule", "c1db55ab-c21a-4637-bb3f-a12568109d3"]
+           // "script": "${file}",
+            "args": ["powershell.exe", "-Command", "./Enable-EvtLogs.ps1", "-WinEventLogs", "Microsoft-Windows-DNS-Client/Operational",
+            "Microsoft-Windows-TaskScheduler/Operational"]
+            //"args": ["Set-ASRRules", "-ResourceGroup", "VMTESTRG", "-Mode", "0", "-VirtualMachine", "WinZo10-VM3-ENT", 
+            //"-Rule", "c1db55ab-c21a-4637-bb3f-a12568109d3"]
         }
     ]
 }

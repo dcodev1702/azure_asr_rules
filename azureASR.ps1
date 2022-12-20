@@ -120,7 +120,7 @@ function Set-ASRRules {
     Begin {
     
         $asrRuleFile = 'asr_rules.txt'
-        $asr_rule_file = "$(Get-Location)\$asrRuleFile"
+        $asr_rule_file = "$PSScriptRoot\$asrRuleFile"
 
         # Use a flag -CheckAzModules to enable checking of required modules
         if ($CheckAzModules) { Check-AzModules }
