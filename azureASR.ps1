@@ -47,6 +47,7 @@ Use advanced protection against ransomware (GUID c1db55ab-c21a-4637-bb3f-a125681
 #Requires -RunAsAdministrator
 
 function Get-AzureSubscription() {
+
     # Check to see if Resource Group specified exists within the provided Azure Subscription
     Write-Host "`r`nYou will be asked to log in to your Azure environment if a session does not already exist. `nGlobal Admin or Security Admin credentials are required. `nThis will allow the script to interact with Azure as required.`r`n" -BackgroundColor Magenta
 
@@ -61,7 +62,6 @@ function Get-AzureSubscription() {
 
     $SubscriptionId = $context.Subscription.Id
 
-    #$ConnectorsFile = "$PSScriptRoot\connectors.json"
 }
 
 function Check-AzModules() {
@@ -93,6 +93,7 @@ function Check-AzModules() {
         }
     }
 }
+
 # MAYBE: Add Azure Subscriptions before iterating over Resource Groups
 function Set-ASRRules {
     [CmdletBinding()] 
@@ -117,7 +118,6 @@ function Set-ASRRules {
     )
 
     Begin {
-
     
         $asrRuleFile = 'asr_rules.txt'
         $asr_rule_file = "$(Get-Location)\$asrRuleFile"
@@ -232,7 +232,7 @@ function Set-ASRRules {
                     Write-Host "`n[3] Virtual Machine:[$_] was successfully located..." -ForegroundColor Green
                 }
             }
-            Write-Host "`nRG:[$ResourceGroup] ASR:[$ModeType] -> Host:[$VirtualMachine]" -ForegroundColor Magenta
+            Write-Host "`nRG:[$ResourceGroup] -> ASR:[$ModeType] -> Host:[$VirtualMachine]" -ForegroundColor Magenta
         }
         
 
