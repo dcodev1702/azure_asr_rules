@@ -30,6 +30,10 @@
 
     TODO:
     -- Enhance error handling, logging, and STDOUT messages
+
+    WORKS CITED:
+    -- Azure Authentication and Module code comes from:
+       + https://github.com/Azure/Azure-Sentinel/blob/master/Tools/Sentinel-All-In-One/Powershell/DeleteConnectors.ps1
 ###########################################################>
 <#
 Warn mode isn't supported for three attack surface reduction rules when you configure them in Microsoft Endpoint Manager. (If you use Group Policy to configure your attack surface reduction rules, warn mode is supported.) The three rules that do not support warn mode when you configure them in Microsoft Endpoint Manager are as follows:
@@ -39,6 +43,55 @@ Block persistence through WMI event subscription (GUID e6db77e5-3df2-4cf1-b95a-6
 Use advanced protection against ransomware (GUID c1db55ab-c21a-4637-bb3f-a12568109d35)
 #>
 
+#Requires -RunAsAdministrator
+
+function Get-AzureSubscription() {
+    # Check to see if Resource Group specified exists within the provided Azure Subscription
+    Write-Host "`r`nYou will now be asked to log in to your Azure environment if a session does not already exist. `nFor this script to work correctly, you need to provide credentials of a Global Admin or Security Admin for your organization. `nThis will allow the script to enable all required connectors.`r`n" -BackgroundColor Magenta
+
+    Read-Host -Prompt "Press enter to continue or CTRL+C to quit the script" 
+
+    $context = Get-AzContext
+
+    if(!$context){
+        Connect-AzAccount
+        $context = Get-AzContext
+    }
+
+    $SubscriptionId = $context.Subscription.Id
+
+    #$ConnectorsFile = "$PSScriptRoot\connectors.json"
+}
+
+function Check-AzModules() {
+
+    # Make sure any modules we depend on are installed
+    # Credit to: Koos Goossens @ Wortell.
+    $modulesToInstall = @(
+        'Az.Accounts',
+        'Az.Compute',
+        'Az.ConnectedMachine'
+    )
+
+    Write-Host "Installing/Importing PowerShell modules..." -ForegroundColor Green
+    $modulesToInstall | ForEach-Object {
+        if (-not (Get-Module -ListAvailable $_)) {
+            Write-Host "  ┖─ Module [$_] not found, installing..." -ForegroundColor Green
+            Install-Module $_ -Force
+        } else {
+            Write-Host "  ┖─ Module [$_] already installed." -ForegroundColor Green
+        }
+    }
+
+    $modulesToInstall | ForEach-Object {
+        if (-not (Get-InstalledModule $_)) {
+            Write-Host "  ┖─ Module [$_] not loaded, importing..." -ForegroundColor Green
+            Import-Module $_ -Force
+        } else {
+            Write-Host "  ┖─ Module [$_] already loaded." -ForegroundColor Green
+        }
+    }
+}
 # MAYBE: Add Azure Subscriptions before iterating over Resource Groups
 function Set-ASRRules {
     [CmdletBinding()] 
@@ -64,38 +117,25 @@ function Set-ASRRules {
 
     Begin {
 
+    
         $asrRuleFile = 'asr_rules.txt'
         $asr_rule_file = "$(Get-Location)\$asrRuleFile"
 
         # Use a flag -CheckAzModules to enable checking of required modules
-        if ($CheckAzModules) {
+        if ($CheckAzModules) { Check-AzModules }
 
-            # Make sure any modules we depend on are installed
-            # Credit to: Koos Goossens @ Wortell.
-            $modulesToInstall = @(
-                'Az.Accounts',
-                'Az.Compute',
-                'Az.ConnectedMachine'
-            )
+        #Before querying Azure, ensure we are logged in
+        Get-AzureSubscription
 
-            Write-Host "Installing/Importing PowerShell modules..." -ForegroundColor Green
-            $modulesToInstall | ForEach-Object {
-                if (-not (Get-Module -ListAvailable $_)) {
-                    Write-Host "  ┖─ Module [$_] not found, installing..." -ForegroundColor Green
-                    Install-Module $_ -Force
-                } else {
-                    Write-Host "  ┖─ Module [$_] already installed." -ForegroundColor Green
-                }
-            }
-
-            $modulesToInstall | ForEach-Object {
-                if (-not (Get-InstalledModule $_)) {
-                    Write-Host "  ┖─ Module [$_] not loaded, importing..." -ForegroundColor Green
-                    Import-Module $_ -Force
-                } else {
-                    Write-Host "  ┖─ Module [$_] already loaded." -ForegroundColor Green
-                }
-            }
+        #Check Resource Group Existing or not
+        Get-AzResourceGroup -Name $ResourceGroup -ErrorVariable RGNotPresent -ErrorAction SilentlyContinue
+        
+        if ($RGNotPresent){        
+            Write-Host "ResourceGroup `"$($ResourceGroup)`" associated to your Azure subscription was not found..." -ForegroundColor Red
+            Write-Host "Exiting, goodbye......." -ForegroundColor Red
+            break
+        } else {
+            Write-Host "Resource Group:[$ResourceGroup] successfully located..." -ForegroundColor Green
         }
 
         # List of ASR Rules - Dated 18 DEC 2022
@@ -148,11 +188,11 @@ function Set-ASRRules {
             $tmpRules | Where-Object -FilterScript { 
                 
                 if($_ -notin $asr_rules) { 
-                    Write-Host "User provided Rule: $_ NOT FOUND!" -ForegroundColor Yellow
-                    Exit 4
+                    Write-Host "`nASR Rule:[$_] - not found, goodbye" -ForegroundColor Red
+                    break
                 } else {
                     # Log and write results of each machine's ASR state
-                    Write-Host "User provided Rule:[$_] located, processing..." -ForegroundColor Green
+                    Write-Host "`nASR Rule:[$_] located, processing..." -ForegroundColor Green
                 }
             }
         }
@@ -165,21 +205,21 @@ function Set-ASRRules {
     
     Process {
 
-        Write-Output("RG: $ResourceGroup : ASR -> $ModeType on Host: $VirtualMachine")
+        Write-Host "RG:[$ResourceGroup] ASR:[$ModeType] -> Host:[$VirtualMachine]" -ForegroundColor Magenta
 
         # Get a list of RUNNING VM's within the registered list of Windows VM's (Azure VM & Azure ARC Servers).
         $totalRunningVMs = @()
         $azure_vms | ForEach-Object {
             if($_.StorageProfile.OsDisk.OsType -eq 'Windows' -and $_.PowerState -eq 'VM running') {
                 $totalRunningVMs += $_.Name
-                Write-Output "Running Azure Windows VM: $($_.Name)"
+                #Write-Output "Running Azure Windows VM: $($_.Name)"
             } 
         }
 
         $arc_vms | ForEach-Object {
             if($_.Status -eq 'Connected' -and $_.OsType -eq 'windows') {
                 $totalRunningVMs += $_.Name
-                Write-Output "Running Azure ARC Windows Server: $($_.Name)"
+                #Write-Output "Running Azure ARC Windows Server: $($_.Name)"
             }
         }
 
@@ -188,10 +228,10 @@ function Set-ASRRules {
         if (-not ([String]::IsNullOrEmpty($VirtualMachine))) {
             $VirtualMachine | Where-Object -FilterScript { 
                 if($_ -notin $totalRunningVMs) { 
-                    Write-Host "User provided VM: $_ could not be found! [$_] might be sleeping, goodbye :|" -ForegroundColor Red
-                    Exit 4
+                    Write-Host "`nVirtual Machine:[$_] could not be found! [$_] might be sleeping, goodbye :|" -ForegroundColor Red
+                    break
                 } else {
-                    Write-Host "User provided VM: $_ was successfully located!" -ForegroundColor Green
+                    Write-Host "`nVirtual Machine:[$_] was successfully located!" -ForegroundColor Green
                 }
             }
         }
@@ -203,25 +243,23 @@ function Set-ASRRules {
 
             if ($Mode -gt 0) {
                 $VMEnabled = $true
-                Write-Output "`nEnable ASR ON $(($totalRunningVMs).count) VMs!"
+                Write-Host "`nEnable ASR ON $(($totalRunningVMs).count) VMs!" -ForegroundColor Green
             } else {
-                Write-Output "`nDisable ASR ON $(($totalRunningVMs).count) VMs!"    
+                Write-Host "`nDisable ASR ON $(($totalRunningVMs).count) VMs!" -ForegroundColor Yellow   
             }
             
+            $parameters = @{}
             if ([String]::IsNullOrEmpty($Rule)) {
                 # Invoke ALL the rules
-                $totalRunningVMs | ForEach-Object {
-                    $parameters = @{ "Mode" = $ModeType }
-                    Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters
-                    Start-Sleep -s 1
-                }
+                $parameters = @{ "Mode" = $ModeType }
             } else {
-                # Invoke specific rules
-                $totalRunningVMs | ForEach-Object {
-                    $parameters = @{ "Mode" = $ModeType; "Rule" = $Rule }
-                    Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters
-                    Start-Sleep -s 1
-                }
+                # Invoke specific rules provided by the user
+                $parameters = @{ "Mode" = $ModeType; "Rule" = $Rule }
+            }
+
+            $totalRunningVMs | ForEach-Object {
+                Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters
+                Start-Sleep -s 1
             }
         
         } else {
@@ -233,22 +271,16 @@ function Set-ASRRules {
                     # Default ALL RULES enabled ..add logic to provide specific rules
                     if ($vm -eq $azureVM) {
 
-                        if ($Mode -gt 0) { 
-                            $VMEnabled = $true
-                            Write-Output "Windows VM [$vm] is now ASR enabled!"
-                        } else {
-                            Write-Output "Windows VM [$vm] is now ASR disabled!"
-                        }
+                        if ($Mode -gt 0) { $VMEnabled = $true }
 
                         if ([String]::IsNullOrEmpty($Rule)) {
                             # Invoke ALL the rules
                             $parameters = @{ "Mode" = $ModeType }
-                            Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters
                         } else {
                             # Invoke specific validated rules
                             $parameters = @{ "Mode" = $ModeType; "Rule" = $Rule }
-                            Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters
                         }
+                        Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters
                         Start-Sleep -s 1
                     }
                 }
@@ -259,7 +291,9 @@ function Set-ASRRules {
     End {
 
         if ($VMEnabled) {
-            Write-Host "`nThank you for enabling Attack Surface Reduction!" -ForegroundColor Green
+            Write-Host "`nEndpoint hardened with Attack Surface Reduction!" -ForegroundColor Green
+        } else {
+            Write-Host "Attack Surface Reduction rule(s) successfully `"DISABLED`"..." -ForegroundColor Yellow
         }
     }
 }
