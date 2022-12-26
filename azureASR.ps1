@@ -170,7 +170,7 @@ function Set-ASRRules {
             $asr_rules_from_file | ForEach-Object { $asr_rules += $_.Split(',')[0] }            
         }
 
-
+        # Validate input recieved and quit the program if a bad value is provided.
         [bool]$VMEnabled = $false
         [String]$ModeType = ""
         switch ( $Mode ) {
@@ -178,6 +178,10 @@ function Set-ASRRules {
             1 { $ModeType = "Enabled" }
             2 { $ModeType = "AuditMode" }
             6 { $ModeType = "Warn" }
+            Default { 
+                Write-Host "[$Mode] is an invalid option [0,1,2,6]`n Please try again." -ForegroundColor Red
+                break
+            }
         }
 
         # If specific rules have been provided, validate them before proceeding
