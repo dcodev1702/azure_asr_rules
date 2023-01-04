@@ -59,6 +59,9 @@ Process {
 
     $asr_rule_cnt = 0
     $asrRules = @()
+
+    # If $Rule is null, no ASR rule(s) was/were provided, thus APPLY ALL RULES with
+    # with the provided ASR mode '$Mode'
     if ([String]::IsNullOrEmpty($Rule)) {
         $asr_rule_cnt = $($asr_rules).count; $asrRules = $asr_rules
     } else { 
