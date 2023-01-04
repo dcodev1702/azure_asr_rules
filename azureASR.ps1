@@ -32,6 +32,8 @@
     -- Enhance error handling (input validation), logging, and STDOUT messages
 
     WORKS CITED:
+    -- ASR
+       + https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/overview-attack-surface-reduction?view=o365-worldwide
     -- Azure Authentication and Module code comes from:
        + https://github.com/Azure/Azure-Sentinel/blob/master/Tools/Sentinel-All-In-One/Powershell/DeleteConnectors.ps1
 ###########################################################>
