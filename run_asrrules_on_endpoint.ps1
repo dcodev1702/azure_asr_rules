@@ -55,7 +55,7 @@ Process {
         $asrRules = $ASRRulesObj
     } else {
 
-        # Create an array of objects with a GUID property
+        # Create an array of ASR Rules w/ GUID property
         $jsonArray = @()
         foreach ($asrRule in $Rule) {
             $obj = [pscustomobject]@{
