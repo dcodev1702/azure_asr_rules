@@ -140,6 +140,8 @@ function Set-ASRRules {
         #$URL = "https://raw.githubusercontent.com/dcodev1702/azure_asr_rules/main/AttackSurfaceReductionRules.json"
         #$ASRRules = (Invoke-WebRequest -Uri $URL -UseBasicParsing).Content | ConvertFrom-Json
         
+        # Acquire ASR Rules (JSON format) locally. This is used to validate any
+        # ASR Rules (GUIDs) manually entered in by the user.
         $ASRRules = Get-Content -Raw ./AttackSurfaceReductionRules.json | ConvertFrom-Json
         
         
