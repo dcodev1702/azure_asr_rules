@@ -10,6 +10,12 @@
   
     Usage:
     ------
+    Import the PowerShell script:
+    . ./azureASR.ps1
+    
+    Basic Example [enable an ASR rule for AuditMode]:
+    Set-ASRRules -ResourceGroup 'VMTESTRG' -Mode 2 -VirtualMachine 'WinZo10-VM-ENT -Rule 'c1db55ab-c21a-4637-bb3f-a12568109d35'
+    
     Enable ALL VMs:       
         CMD: Set-ASRRules -ResourceGroup 'VMTESTRG' -Mode 2 -All
     
