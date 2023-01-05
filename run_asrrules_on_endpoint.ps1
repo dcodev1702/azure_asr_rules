@@ -21,6 +21,7 @@ Param (
 )
 
 Begin {
+    
     # Inspired from: https://github.com/Kaidja/Defender-for-Endpoint
     #Attack Surface Reduction Rules JSON File
     $URL = "https://raw.githubusercontent.com/dcodev1702/azure_asr_rules/main/AttackSurfaceReductionRules.json"
@@ -53,7 +54,7 @@ Process {
     if ([String]::IsNullOrEmpty($Rule)) {
         $asrRules = $ASRRulesObj
     } else {
-        
+
         # Create an array of objects with a GUID property
         $jsonArray = @()
         foreach ($asrRule in $Rule) {
