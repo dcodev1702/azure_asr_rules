@@ -38,6 +38,8 @@
     -- Enhance error handling (input validation), logging, and STDOUT messages
 
     WORKS CITED:
+    -- Inspiration for using ASR Rules in JSON format
+       + https://github.com/Kaidja/Defender-for-Endpoint
     -- ASR
        + https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/overview-attack-surface-reduction?view=o365-worldwide
     -- Azure Authentication and Module code comes from:
