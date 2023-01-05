@@ -14,4 +14,4 @@ Usage:
 3. Basic Example [enable an ASR rule for AuditMode]:
    Set-ASRRules -ResourceGroup 'YOUR_RG' -Mode 2 -VirtualMachine 'YOUR_AZ_VM' -Rule 'c1db55ab-c21a-4637-bb3f-a12568109d35'
 
-4. Run Set-ASRRules with -CheckAzModules to install the three required Az modules if necessary.
+4. Run the Set-ASRRules CmdLet with -CheckAzModules to install the three required Az modules if necessary.
