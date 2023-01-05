@@ -21,12 +21,12 @@ Param (
 )
 
 Begin {
-    
+
     # Inspired from: https://github.com/Kaidja/Defender-for-Endpoint
-    #Attack Surface Reduction Rules JSON File
+    # Attack Surface Reduction Rules JSON File
     $URL = "https://raw.githubusercontent.com/dcodev1702/azure_asr_rules/main/AttackSurfaceReductionRules.json"
 
-    #Convert ASR Rules from JSON
+    # Convert ASR Rules from JSON
     $ASRRulesObj = (Invoke-WebRequest -Uri $URL -UseBasicParsing).Content | ConvertFrom-Json
 
 
