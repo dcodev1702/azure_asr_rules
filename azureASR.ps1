@@ -14,7 +14,7 @@
     . ./azureASR.ps1
     
     Basic Example [enable an ASR rule for AuditMode]:
-    Set-ASRRules -ResourceGroup 'VMTESTRG' -Mode 2 -VirtualMachine 'WinZo10-VM-ENT -Rule 'c1db55ab-c21a-4637-bb3f-a12568109d35'
+    Set-ASRRules -ResourceGroup 'VMTESTRG' -Mode 2 -VirtualMachine 'WinZo10-VM-ENT -Rules 'c1db55ab-c21a-4637-bb3f-a12568109d35'
     
     Enable ALL VMs:       
         CMD: Set-ASRRules -ResourceGroup 'VMTESTRG' -Mode 2 -All
@@ -24,15 +24,15 @@
     
     Enable specified VMs and user provided rule:
         CMD: Set-ASRRules -ResourceGroup 'VMTESTRG' -Mode 0 -VirtualMachine 'WinZo10-VM-ENT','WinZo10-VM3-ENT' \
-        -Rule 'c1db55ab-c21a-4637-bb3f-a12568109d35'
+        -Rules 'c1db55ab-c21a-4637-bb3f-a12568109d35'
     
     Enable specified Rules: 
         CMD: Set-ASRRules -ResourceGroup 'VMTESTRG' -Mode 6 -VirtualMachine 'WinZo10-VM-ENT' \
         -Rule "9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2,01443614-cd74-433a-b99e-2ecdc07bfc25,d1e49aac-8f56-4280-b9ba-993a6d77406c"
 
     Enable specified Rules (BAD Rule supplied [last rule, last character]):
-        CMD: Set-ASRRules -ResourceGroup 'VMTESTRG' -Mode 6 -VirtualMachine 'WinZo10-VM3-ENT' \
-        -Rule "7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c,d4f940ab-401b-4efc-aadc-ad5f3c50688b"
+        CMD: Set-ASRRules -ResourceGroup 'VMTESTRG' -Mode 6 -VirtualMachine 'WinZo10-VM-ENT' \
+        -Rules "7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c,d4f940ab-401b-4efc-aadc-ad5f3c50688b"
 
     TODO:
     -- Enhance error handling (input validation), logging, and STDOUT messages
@@ -112,7 +112,7 @@ function Set-ASRRules {
         [String] $ResourceGroup,
         
         [Parameter(Mandatory = $false)]
-        [String] $Rule = $null,
+        [String] $Rules = $null,
         
         [Parameter(Mandatory = $true)]
         [ValidateSet(0,1,2,6)] [int] $Mode = 2,
@@ -174,11 +174,11 @@ function Set-ASRRules {
         }
 
         
-        if (-not ([String]::IsNullOrEmpty($Rule))) {
+        if (-not ([String]::IsNullOrEmpty($Rules))) {
 
             # If specific rules have been provided, validate them before proceeding
             $tmpRules = @()
-            $tmpRules = $Rule.Split(',')
+            $tmpRules = $Rules.Split(',')
             
             $tmpRules | Where-Object -FilterScript { 
                 
@@ -241,12 +241,12 @@ function Set-ASRRules {
             }
             
             $parameters = @{}
-            if ([String]::IsNullOrEmpty($Rule)) {
+            if ([String]::IsNullOrEmpty($Rules)) {
                 # Invoke ALL the rules
                 $parameters = @{ "Mode" = $ModeType }
             } else {
                 # Invoke specific rules provided by the user
-                $parameters = @{ "Mode" = $ModeType; "Rule" = $Rule }
+                $parameters = @{ "Mode" = $ModeType; "ASRRules" = $Rules }
             }
 
             $totalRunningVMs | ForEach-Object {
@@ -266,12 +266,12 @@ function Set-ASRRules {
 
                         if ($Mode -gt 0) { $VMEnabled = $true }
 
-                        if ([String]::IsNullOrEmpty($Rule)) {
+                        if ([String]::IsNullOrEmpty($Rules)) {
                             # Invoke ALL the rules
                             $parameters = @{ "Mode" = $ModeType }
                         } else {
                             # Invoke specific validated rules
-                            $parameters = @{ "Mode" = $ModeType; "ASRRules" = $Rule }
+                            $parameters = @{ "Mode" = $ModeType; "ASRRules" = $Rules }
                         }
                         Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters | Out-Null
                     }
