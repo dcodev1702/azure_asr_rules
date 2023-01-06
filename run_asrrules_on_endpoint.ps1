@@ -8,7 +8,7 @@ Purpose:
 This is the helper script that gets ran on the actual remote endpoint via Invoke-AzVMRunCommand
 
 Usage: 
-    Local: powershell.exe -Command .\run_asr.ps1 -Rule 'd4f940ab-401b-4efc-aadc-ad5f3c50688a','c1db55ab-c21a-4637-bb3f-a12568109d35' -Mode 'Warn'
+    Local: powershell.exe -Command .\run_asrrules_on_endpoint.ps1 -ASRRules 'd4f940ab-401b-4efc-aadc-ad5f3c50688a','c1db55ab-c21a-4637-bb3f-a12568109d35' -Mode 'Warn'
     Remote: called via Invoke-AzVMRunCommand in azureASR.ps1
 #>
 
@@ -17,7 +17,7 @@ Param (
     [String] $Mode = 'Disabled',
     
     [Parameter(Mandatory = $false)] 
-    [String] $Rule = $null
+    [String] $ASRRules = $null
 )
 
 Begin {
@@ -39,7 +39,7 @@ Begin {
     [String]$file = "$debug_dir\$debug_file"
     [int]$cntr = 0
     $Rules = @()
-    $Rules = $Rule.Split(',')
+    $Rules = $ASRRules.Split(',')
     $Rules | ForEach-Object {
         Write-Output "$(Get-Date -Format G) :: HELPER SCRIPT | ASR RULES :: $_ -> MODE [$Mode]" | Out-File -FilePath $file -Append
     }
@@ -47,17 +47,17 @@ Begin {
 
 Process {
 
-    $asrRules = $null
+    $asrRules2 = $null
 
-    # If $Rule is null, no ASR rule(s) was/were provided, thus APPLY ALL RULES
+    # If $Rules is null, no ASR rule(s) was/were provided, thus APPLY ALL RULES
     # with the provided ASR mode '$Mode'
-    if ([String]::IsNullOrEmpty($Rule)) {
-        $asrRules = $ASRRulesObj
+    if ([String]::IsNullOrEmpty($ASRRules)) {
+        $asrRules2 = $ASRRulesObj
     } else {
 
         # Create an array of ASR Rules w/ GUID property
         $jsonArray = @()
-        foreach ($asrRule in $Rule) {
+        foreach ($asrRule in $ASRRules) {
             $obj = [pscustomobject]@{
                 GUID = $asrRule
             }
@@ -65,12 +65,12 @@ Process {
         }
 
         # Convert the array of objects to a JSON object
-        $asrRules = $jsonArray | ConvertTo-Json | ConvertFrom-Json
+        $asrRules2 = $jsonArray | ConvertTo-Json | ConvertFrom-Json
 
     }
 
-    Write-Output "[$env:COMPUTERNAME] ::: Applying $($asrRules.count) ASR Rules -> MODE::[$Mode] to the Endpoint" | Out-File -FilePath $file -Append
-    $asrRules | ForEach-Object {
+    Write-Output "[$env:COMPUTERNAME] ::: Applying $($asrRules2.count) ASR Rules -> MODE::[$Mode] to the Endpoint" | Out-File -FilePath $file -Append
+    $asrRules2 | ForEach-Object {
         Add-MpPreference -AttackSurfaceReductionRules_Ids $_.GUID -AttackSurfaceReductionRules_Actions $Mode
     }
 }
