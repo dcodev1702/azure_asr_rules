@@ -28,7 +28,7 @@
     
     Enable specified Rules: 
         CMD: Set-ASRRules -ResourceGroup 'VMTESTRG' -Mode 6 -VirtualMachine 'WinZo10-VM-ENT' \
-        -Rule "9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2,01443614-cd74-433a-b99e-2ecdc07bfc25,d1e49aac-8f56-4280-b9ba-993a6d77406c"
+        -Rules "9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2,01443614-cd74-433a-b99e-2ecdc07bfc25,d1e49aac-8f56-4280-b9ba-993a6d77406c"
 
     Enable specified Rules (BAD Rule supplied [last rule, last character]):
         CMD: Set-ASRRules -ResourceGroup 'VMTESTRG' -Mode 6 -VirtualMachine 'WinZo10-VM-ENT' \
