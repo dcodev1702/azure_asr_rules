@@ -247,7 +247,7 @@ function Set-ASRRules {
                 $parameters = @{ "Mode" = $ModeType }
             } else {
                 # Invoke specific rules provided by the user
-                $parameters = @{ "Mode" = $ModeType; "ASRRules" = $Rules }
+                $parameters = @{ "Mode" = $ModeType; "Rules" = $Rules }
             }
 
             $totalRunningVMs | ForEach-Object {
@@ -272,7 +272,7 @@ function Set-ASRRules {
                             $parameters = @{ "Mode" = $ModeType }
                         } else {
                             # Invoke specific validated rules
-                            $parameters = @{ "Mode" = $ModeType; "ASRRules" = $Rules }
+                            $parameters = @{ "Mode" = $ModeType; "Rules" = $Rules }
                         }
                         Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters | Out-Null
                     }

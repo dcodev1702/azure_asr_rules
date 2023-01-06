@@ -17,7 +17,7 @@ Param (
     [String] $Mode = 'Disabled',
     
     [Parameter(Mandatory = $false)] 
-    [String] $ASRRules = $null
+    [String] $Rules = $null
 )
 
 Begin {
@@ -43,9 +43,9 @@ Begin {
 
     [String]$file = "$debug_dir\$debug_file"
     [int]$cntr = 0
-    $Rules = @()
-    $Rules = $ASRRules.Split(',')
-    $Rules | ForEach-Object {
+    $ParseASRRules = @()
+    $ParseASRRules = $Rules.Split(',')
+    $ParseASRRules | ForEach-Object {
         Write-Output "$(Get-Date -Format G) :: HELPER SCRIPT | ASR RULES :: $_ -> MODE [$Mode]" | Out-File -FilePath $file -Append
     }
 }
@@ -56,13 +56,13 @@ Process {
 
     # If $Rules is null, no ASR rule(s) was/were provided, thus APPLY ALL RULES
     # with the provided ASR mode '$Mode'
-    if ([String]::IsNullOrEmpty($Rules)) {
-        $asrRules2 = $ASRRulesObj
+    if ([String]::IsNullOrEmpty($ParseASRRules)) {
+        $asrRules2 = $ASRRules
     } else {
 
         # Create an array of ASR Rules w/ GUID property
         $ASRRuleArray = @()
-        foreach ($asrRule in $Rules) {
+        foreach ($asrRule in $ParseASRRules) {
             $obj = [pscustomobject]@{
                 GUID = $asrRule
             }
@@ -71,6 +71,7 @@ Process {
 
         # Convert the array of objects to a JSON object
         $asrRules2 = $ASRRuleArray | ConvertTo-Json | ConvertFrom-Json
+        
     }
 
     Write-Output "[$env:COMPUTERNAME] ::: Applying $($asrRules2.count) ASR Rules -> MODE::[$Mode] to the Endpoint" | Out-File -FilePath $file -Append
