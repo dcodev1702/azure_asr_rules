@@ -66,7 +66,6 @@ Process {
 
         # Convert the array of objects to a JSON object
         $asrRules2 = $jsonArray | ConvertTo-Json | ConvertFrom-Json
-
     }
 
     Write-Output "[$env:COMPUTERNAME] ::: Applying $($asrRules2.count) ASR Rules -> MODE::[$Mode] to the Endpoint" | Out-File -FilePath $file -Append
