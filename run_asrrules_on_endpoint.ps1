@@ -51,13 +51,13 @@ Process {
 
     # If $Rules is null, no ASR rule(s) was/were provided, thus APPLY ALL RULES
     # with the provided ASR mode '$Mode'
-    if ([String]::IsNullOrEmpty($ASRRules)) {
+    if ([String]::IsNullOrEmpty($Rules)) {
         $asrRules2 = $ASRRulesObj
     } else {
 
         # Create an array of ASR Rules w/ GUID property
         $jsonArray = @()
-        foreach ($asrRule in $ASRRules) {
+        foreach ($asrRule in $Rules) {
             $obj = [pscustomobject]@{
                 GUID = $asrRule
             }
