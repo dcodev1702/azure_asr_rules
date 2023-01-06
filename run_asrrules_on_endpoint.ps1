@@ -8,7 +8,7 @@ Purpose:
 This is the helper script that gets ran on the actual remote endpoint via Invoke-AzVMRunCommand
 
 Usage: 
-    Local: powershell.exe -Command .\run_asrrules_on_endpoint.ps1 -ASRRules 'd4f940ab-401b-4efc-aadc-ad5f3c50688a','c1db55ab-c21a-4637-bb3f-a12568109d35' -Mode 'Warn'
+    Local: powershell.exe -Command .\run_asrrules_on_endpoint.ps1 -ASRRules "d4f940ab-401b-4efc-aadc-ad5f3c50688a,c1db55ab-c21a-4637-bb3f-a12568109d35" -Mode 'Warn'
     Remote: called via Invoke-AzVMRunCommand in azureASR.ps1
 #>
 
