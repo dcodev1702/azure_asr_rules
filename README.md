@@ -1,4 +1,4 @@
-# ASR Rules for Azure VMs
+# ASR Rule enablement for Azure VMs
 A no frills script that will iterate over a resource group looking for Azure VMs to enable/disable ASR rules.
 
 https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/attack-surface-reduction?view=o365-worldwide
