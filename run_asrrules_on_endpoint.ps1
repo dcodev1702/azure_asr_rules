@@ -22,12 +22,17 @@ Param (
 
 Begin {
 
-    # Inspired from: https://github.com/Kaidja/Defender-for-Endpoint
+    # Cited and inspired from: https://github.com/Kaidja/Defender-for-Endpoint
+    # If access to GitHub is permitted, pull from repo, else pull the ASR Rules locally
     # Attack Surface Reduction Rules JSON File
     $URL = "https://raw.githubusercontent.com/dcodev1702/azure_asr_rules/main/AttackSurfaceReductionRules.json"
-
-    # Convert ASR Rules from JSON
-    $ASRRulesObj = (Invoke-WebRequest -Uri $URL -UseBasicParsing).Content | ConvertFrom-Json
+    $ASRWebReq = Invoke-WebRequest -Uri $URL -UseBasicParsing
+    if ($ASRWebReq.StatusCode -eq 200) {
+        $ASRRules = $ASRWebReq.Content | ConvertFrom-Json
+    } else {
+        # GitHub is inaccessible, acquire ASR Rules (JSON format) locally.
+        $ASRRules = Get-Content -Raw ./AttackSurfaceReductionRules.json | ConvertFrom-Json
+    }
 
 
     [String]$debug_dir = "$env:SystemDrive\Temp"

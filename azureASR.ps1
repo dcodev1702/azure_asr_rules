@@ -132,17 +132,18 @@ function Set-ASRRules {
         # List of ASR Rules - Dated 18 DEC 2022
         # https://github.com/MicrosoftDocs/microsoft-365-docs/blob/public/microsoft-365/security/defender-endpoint/attack-surface-reduction-rules-reference.md
         
-        # Inspired from: https://github.com/Kaidja/Defender-for-Endpoint
+        # Cite and inspired from: https://github.com/Kaidja/Defender-for-Endpoint
 
-        # The option exists to pull the ASR Rules locally or remotely via GitHub
-    
+        # If access to GitHub is permitted, pull from repo, else pull the ASR Rules locally
         # Attack Surface Reduction Rules JSON File
-        #$URL = "https://raw.githubusercontent.com/dcodev1702/azure_asr_rules/main/AttackSurfaceReductionRules.json"
-        #$ASRRules = (Invoke-WebRequest -Uri $URL -UseBasicParsing).Content | ConvertFrom-Json
-        
-        # Acquire ASR Rules (JSON format) locally. This is used to validate any
-        # ASR Rules (GUIDs) manually entered in by the user.
-        $ASRRules = Get-Content -Raw ./AttackSurfaceReductionRules.json | ConvertFrom-Json
+        $URL = "https://raw.githubusercontent.com/dcodev1702/azure_asr_rules/main/AttackSurfaceReductionRules.json"
+        $ASRWebReq = Invoke-WebRequest -Uri $URL -UseBasicParsing
+        if ($ASRWebReq.StatusCode -eq 200) {
+            $ASRRules = $ASRWebReq.Content | ConvertFrom-Json
+        } else {
+            # GitHub is inaccessible, acquire ASR Rules (JSON format) locally.
+            $ASRRules = Get-Content -Raw ./AttackSurfaceReductionRules.json | ConvertFrom-Json
+        }
         
         
         # Use a flag -CheckAzModules to enable checking of required modules
