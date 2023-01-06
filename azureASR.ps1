@@ -271,7 +271,7 @@ function Set-ASRRules {
                             $parameters = @{ "Mode" = $ModeType }
                         } else {
                             # Invoke specific validated rules
-                            $parameters = @{ "Mode" = $ModeType; "ASRRules" = $Rule } # THERE WAS A BUG HERE due to renaming parameter from $Rule -> $ASRRules
+                            $parameters = @{ "Mode" = $ModeType; "ASRRules" = $Rule }
                         }
                         Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters
                     }
