@@ -58,14 +58,15 @@ Use advanced protection against ransomware (GUID c1db55ab-c21a-4637-bb3f-a125681
 
 function Get-AzureSubscription() {
 
-    # Check to see if Resource Group specified exists within the provided Azure Subscription
-    Write-Host "`r`nYou will be asked to log in to your Azure environment if a session does not already exist. `nGlobal Admin or Security Admin credentials are required. `nThis will allow the script to interact with Azure as required.`r`n" -BackgroundColor Magenta
-
-    Read-Host -Prompt "Press enter to continue or CTRL+C to quit the script" 
-
+    # Test to see if there's an active login session to the Azure tenant
+    # Returns null of no login session exists 
     $context = Get-AzContext
 
     if(!$context){
+        # Check to see if Resource Group specified exists within the provided Azure Subscription
+        Write-Host "`r`nYou will be asked to log in to your Azure environment if a session does not already exist. `nGlobal Admin or Security Admin credentials are required. `nThis will allow the script to interact with Azure as required.`r`n" -BackgroundColor Magenta
+        Read-Host -Prompt "Press enter to continue or CTRL+C to quit the script"
+     
         Connect-AzAccount
         $context = Get-AzContext
     }
