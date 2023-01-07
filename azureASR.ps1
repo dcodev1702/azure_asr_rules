@@ -143,7 +143,7 @@ function Set-ASRRules {
 
         # If access to GitHub is permitted, pull from repo, else pull the ASR Rules locally
         # Attack Surface Reduction Rules JSON File
-        $URL = "https://raw.githubusercontent.com/dcodev1702/azure_asr_rules/main/AttackSurfaceReductionRuless.json"
+        $URL = "https://raw.githubusercontent.com/dcodev1702/azure_asr_rules/main/AttackSurfaceReductionRules.json"
         #ensure we get a response even if an error's returned
         $ASRWebReqTry = try { 
             $ASRWebReq = Invoke-WebRequest -Uri $URL -UseBasicParsing -ErrorAction SilentlyContinue
