@@ -52,9 +52,11 @@ Process {
         $URL = "https://raw.githubusercontent.com/dcodev1702/azure_asr_rules/main/AttackSurfaceReductionRules.json"
         
         #ensure we get a response even if an error's returned
-        $ASRWebReqTry = try { 
+        try {
+
             $ASRWebReq = Invoke-WebRequest -Uri $URL -UseBasicParsing -ErrorAction SilentlyContinue
             $ASRRules = $ASRWebReq.Content | ConvertFrom-Json
+        
         } catch [System.Net.WebException] {
 
             # GitHub is inaccessible, acquire ASR Rules (JSON format) locally.
