@@ -28,7 +28,8 @@ Usage:
    - Az.Compute
    - Az.Accounts
 
-   
+<br />
+<br />
    
 <font size="2">**ASR Azure VM - EXAMPLE 1 (Disable)**</font><br />
 Import the PowerShell script, disable ASR Rules for all Azure VMs, and check to ensure the required Az Modules are installed.
