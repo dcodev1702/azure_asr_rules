@@ -38,6 +38,8 @@ Import the PowerShell script, disable ASR Rules for all Azure VMs, and check to 
 ![Azure_ASR_Automation-DISABLED](https://user-images.githubusercontent.com/32214072/211174438-3032e880-e0a7-4116-8f4f-553d0cd12e8f.png)
 
 
+<br />
+<br />
    
 <font size="2">**ASR Azure VM - EXAMPLE 2 (Enable AuditMode)**</font><br />
 Enable all 16 ASR Rules in AuditMode on for all Azure VM's
