@@ -211,7 +211,7 @@ function Set-ASRRules {
         $totalRunningVMs = @()
         $azure_vms | ForEach-Object {
             if($_.StorageProfile.OsDisk.OsType -eq 'Windows' -and $_.PowerState -eq 'VM running') {
-                $totalRunningVMs += $_.Name
+                $totalRunningVMs += $_
             } 
         }
 
@@ -220,7 +220,7 @@ function Set-ASRRules {
         # in $totalRunningVMs before ASR rule application/consideration
         if (-not ([String]::IsNullOrEmpty($VirtualMachine))) {
             $VirtualMachine | Where-Object -FilterScript { 
-                if($_ -notin $totalRunningVMs) { 
+                if($_ -notin $totalRunningVMs.Name) { 
                     Write-Host "`nVirtual Machine:[$_] could not be found! [$_] might be sleeping, goodbye :|" -ForegroundColor Red
                     break
                 } else {
@@ -251,7 +251,7 @@ function Set-ASRRules {
             }
 
             $totalRunningVMs | ForEach-Object {
-                Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters | Out-Null
+                Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $_.Name -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters | Out-Null
                 Start-Sleep -s 1
             }
         
@@ -263,7 +263,7 @@ function Set-ASRRules {
                 foreach ($azureVM in $totalRunningVMs) {
                     
                     # Default ALL RULES enabled ..add logic to provide specific rules
-                    if ($vm -eq $azureVM) {
+                    if ($vm -eq $azureVM.Name) {
 
                         if ($Mode -gt 0) { $VMEnabled = $true }
 

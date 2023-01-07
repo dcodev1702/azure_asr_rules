@@ -37,12 +37,10 @@ Begin {
 
     [String]$file = "$debug_dir\$debug_file"
     [int]$cntr = 0
-    
+    $asrRules2 = $null
 }
 
 Process {
-
-    $asrRules2 = $null
 
     # If $Rules is null, no ASR rule(s) was/were provided, thus APPLY ALL RULES
     # with the provided ASR mode '$Mode'
