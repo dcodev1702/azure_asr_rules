@@ -198,7 +198,7 @@ function Set-ASRRules {
             }
         } else {
             # Log and write results of each machine's ASR state
-            Write-Host "`n[2] Applying ALL $($ASRRules.count) ASR Rules -> [$ModeType] to endpoint, processing..." -ForegroundColor Green
+            Write-Host "`n[2] Selected ALL $($ASRRules.count) ASR Rules -> Mode:[$ModeType], processing..." -ForegroundColor Green
         }
         
         # Query Azure subscription and get list of all registered Windows VM's in Azure
@@ -221,7 +221,7 @@ function Set-ASRRules {
         if (-not ([String]::IsNullOrEmpty($VirtualMachine))) {
             $VirtualMachine | Where-Object -FilterScript { 
                 if($_ -notin $totalRunningVMs.Name) { 
-                    Write-Host "`nVirtual Machine:[$_] could not be found! [$_] might be sleeping, goodbye :|" -ForegroundColor Red
+                    Write-Host "`n[3] Virtual Machine:[$_] could not be found! [$_] might be sleeping, goodbye :|" -ForegroundColor Red
                     break
                 } else {
                     Write-Host "`n[3] Virtual Machine:[$_] was successfully located..." -ForegroundColor Green
@@ -236,9 +236,8 @@ function Set-ASRRules {
 
             if ($Mode -gt 0) {
                 $VMEnabled = $true
-                Write-Host "`nEnable ASR ON $(($totalRunningVMs).count) VMs!" -ForegroundColor Green
             } else {
-                Write-Host "`nDisable ASR ON $(($totalRunningVMs).count) VMs!" -ForegroundColor Yellow   
+                Write-Host "`nDisabling ASR ON $(($totalRunningVMs).count) VM(s)!" -ForegroundColor Yellow   
             }
             
             $parameters = @{}
@@ -251,6 +250,7 @@ function Set-ASRRules {
             }
 
             $totalRunningVMs | ForEach-Object {
+                Write-Host "`n[3] Attempting to apply ASR Rules against [$($_.Name)]..." -ForegroundColor Cyan
                 Invoke-AzVMRunCommand -ResourceGroup $_.ResourceGroupName -VMName $_.Name -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters | Out-Null
                 Start-Sleep -s 1
             }
