@@ -135,7 +135,7 @@ function Set-ASRRules {
 
         #Before querying Azure, ensure we are logged in
         Get-AzureSubscription
-        
+
         # List of ASR Rules - Dated 18 DEC 2022
         # https://github.com/MicrosoftDocs/microsoft-365-docs/blob/public/microsoft-365/security/defender-endpoint/attack-surface-reduction-rules-reference.md
         
@@ -143,15 +143,17 @@ function Set-ASRRules {
 
         # If access to GitHub is permitted, pull from repo, else pull the ASR Rules locally
         # Attack Surface Reduction Rules JSON File
-        $URL = "https://raw.githubusercontent.com/dcodev1702/azure_asr_rules/main/AttackSurfaceReductionRules.json"
+        $URL = "https://raw.githubusercontent.com/dcodev1702/azure_asr_rules/main/AttackSurfaceReductionRuless.json"
         #ensure we get a response even if an error's returned
         $ASRWebReqTry = try { 
             $ASRWebReq = Invoke-WebRequest -Uri $URL -UseBasicParsing -ErrorAction SilentlyContinue
             $ASRRules = $ASRWebReq.Content | ConvertFrom-Json
+            Write-Host "[0] Successfully acquired & parsed ASR Rules from GitHub repo...`n" -ForegroundColor Green
+
         } catch [System.Net.WebException] {
 
             # GitHub is inaccessible, acquire ASR Rules (JSON format) locally.
-            Write-Host "[0] Web Request to GitHub repo to parse ASR Rules failed, switching to locally defined ASR Rules!`n" -ForegroundColor Yellow
+            Write-Host "[0] Web Request to GitHub repo to parse ASR Rules failed, switching to locally provided ASR Rules!`n" -ForegroundColor Yellow
             $ASRRules = Get-Content -Raw ./AttackSurfaceReductionRules.json | ConvertFrom-Json
         }
 
