@@ -80,7 +80,7 @@ Process {
             $ASRRuleArray += $obj
         }
 
-        # Convert the array of objects to a JSON object
+        # Convert ASR Rules (GUIDs) to a JSON object
         $asrRules2 = $ASRRuleArray | ConvertTo-Json | ConvertFrom-Json
         
     }
