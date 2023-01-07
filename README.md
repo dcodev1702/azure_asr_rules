@@ -27,3 +27,16 @@ Usage:
 5. Run the Set-ASRRules CmdLet with -CheckAzModules to install the two required Az modules if necessary.
    - Az.Compute
    - Az.Accounts
+
+##ASR Azure VM - EXAMPLE 1 (Disable)##
+Import the PowerShell script, disable ASR Rules for all Azure VMs, and check to ensure the required Az Modules are installed.
+
+
+![Azure_ASR_Automation-DISABLED](https://user-images.githubusercontent.com/32214072/211174438-3032e880-e0a7-4116-8f4f-553d0cd12e8f.png)
+
+
+##ASR Azure VM - EXAMPLE 2 (Enable AuditMode)##
+
+
+![Azure_ASR_Automation-AUDITMODE](https://user-images.githubusercontent.com/32214072/211174449-7405dbd6-a84a-4333-ad63-b48851a80c09.png)
+
