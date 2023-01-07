@@ -56,11 +56,13 @@ Process {
 
             $ASRWebReq = Invoke-WebRequest -Uri $URL -UseBasicParsing -ErrorAction SilentlyContinue
             $ASRRules = $ASRWebReq.Content | ConvertFrom-Json
+            Write-Output "[0] Successfully acquired & parsed ASR Rules from GitHub repo...`n" | Out-File $file -Append
+
         
         } catch [System.Net.WebException] {
 
             # GitHub is inaccessible, acquire ASR Rules (JSON format) locally.
-            Write-Host "[0] Web Request to GitHub repo to parse ASR Rules failed, switching to locally defined ASR Rules!`n" -ForegroundColor Yellow
+            Write-Output "[0] Web Request to GitHub repo to parse ASR Rules failed, switching to locally defined ASR Rules!`n" | Out-File $file -Append
             $ASRRules = Get-Content -Raw ./AttackSurfaceReductionRules.json | ConvertFrom-Json
         }
 
