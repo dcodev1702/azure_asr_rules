@@ -137,28 +137,18 @@ function Set-ASRRules {
 
         # If access to GitHub is permitted, pull from repo, else pull the ASR Rules locally
         # Attack Surface Reduction Rules JSON File
-        $URL = "https://raw.githubusercontent.com/dcodev1702/azure_asr_rules/main/AttackSurfaceReductionRuless.json"
+        $URL = "https://raw.githubusercontent.com/dcodev1702/azure_asr_rules/main/AttackSurfaceReductionRules.json"
         #ensure we get a response even if an error's returned
-        $ASRWebReq = try { 
-            (Invoke-WebRequest -Uri $URL -UseBasicParsing -ErrorAction SilentlyContinue).BaseResponse
+        $ASRWebReqTry = try { 
+            $ASRWebReq = Invoke-WebRequest -Uri $URL -UseBasicParsing -ErrorAction SilentlyContinue
+            $ASRRules = $ASRWebReq.Content | ConvertFrom-Json
         } catch [System.Net.WebException] {
-            # GitHub is inaccessible, acquire ASR Rules (JSON format) locally.
-            Write-Host "Web Request to GitHub repo failed, switching to locally defined ASR Rules!`n" -ForegroundColor Yellow
-            $ASRRules = Get-Content -Raw ./AttackSurfaceReductionRules.json | ConvertFrom-Json
 
-            #Write-Error "An exception was caught: $($_.Exception.Message)"
-            #$_.Exception.Response 
-        } 
-        #$ASRWebReq = Invoke-WebRequest -Uri $URL -UseBasicParsing -ErrorAction SilentlyContinue | Out-Null
-        #if ($ASRWebReq.StatusCode -eq 200) {
-        #    $ASRRules = $ASRWebReq.Content | ConvertFrom-Json
-        #} else {
             # GitHub is inaccessible, acquire ASR Rules (JSON format) locally.
-        #    Write-Host "Web Request to GitHub repo failed, switching to locally defined ASR Rules!`n" -ForegroundColor Yellow
-        #    $ASRRules = Get-Content -Raw ./AttackSurfaceReductionRules.json | ConvertFrom-Json
-        #}
-        
-        
+            Write-Host "[0] Web Request to GitHub repo to parse ASR Rules failed, switching to locally defined ASR Rules!`n" -ForegroundColor Yellow
+            $ASRRules = Get-Content -Raw ./AttackSurfaceReductionRules.json | ConvertFrom-Json
+        }
+
         # Use a flag -CheckAzModules to enable checking of required modules
         if ($CheckAzModules) { Check-AzModules }
 
@@ -204,6 +194,9 @@ function Set-ASRRules {
                     Write-Host "`n[2] ASR Rule:[$_] located, processing..." -ForegroundColor Green
                 }
             }
+        } else {
+            # Log and write results of each machine's ASR state
+            Write-Host "`n[2] Applying ALL $($ASRRules.count) ASR Rules to endpoint, processing..." -ForegroundColor Green
         }
         
         # Query Azure subscription and get list of all registered Windows VM's in Azure & Azure ARC

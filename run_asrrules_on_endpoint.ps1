@@ -29,9 +29,7 @@ Param (
 
 Begin {
 
-    # Cited and inspired from: https://github.com/Kaidja/Defender-for-Endpoint
-    # If access to GitHub is permitted, pull from repo, else pull the ASR Rules locally
-    # Attack Surface Reduction Rules JSON File
+    <#
     $URL = "https://raw.githubusercontent.com/dcodev1702/azure_asr_rules/main/AttackSurfaceReductionRules.json"
     $ASRWebReq = Invoke-WebRequest -Uri $URL -UseBasicParsing
     if ($ASRWebReq.StatusCode -eq 200) {
@@ -40,7 +38,7 @@ Begin {
         # GitHub is inaccessible, acquire ASR Rules (JSON format) locally.
         $ASRRules = Get-Content -Raw ./AttackSurfaceReductionRules.json | ConvertFrom-Json
     }
-
+    #>
 
     [String]$debug_dir = "$env:SystemDrive\Temp"
     [String]$debug_file = 'ASR_Debug.txt'
@@ -50,11 +48,7 @@ Begin {
 
     [String]$file = "$debug_dir\$debug_file"
     [int]$cntr = 0
-    $ParseASRRules = @()
-    $ParseASRRules = $Rules.Split(',')
-    $ParseASRRules | ForEach-Object {
-        Write-Output "$(Get-Date -Format G) :: HELPER SCRIPT | ASR RULES :: $_ -> MODE [$Mode]" | Out-File -FilePath $file -Append
-    }
+    
 }
 
 Process {
@@ -63,9 +57,31 @@ Process {
 
     # If $Rules is null, no ASR rule(s) was/were provided, thus APPLY ALL RULES
     # with the provided ASR mode '$Mode'
-    if ([String]::IsNullOrEmpty($ParseASRRules)) {
+    if ([String]::IsNullOrEmpty($Rules)) {
+
+        # Cited and inspired from: https://github.com/Kaidja/Defender-for-Endpoint
+        # If access to GitHub is permitted, pull from repo, else pull the ASR Rules locally
+        # Attack Surface Reduction Rules JSON File
+        $URL = "https://raw.githubusercontent.com/dcodev1702/azure_asr_rules/main/AttackSurfaceReductionRules.json"
+        #ensure we get a response even if an error's returned
+        $ASRWebReqTry = try { 
+            $ASRWebReq = Invoke-WebRequest -Uri $URL -UseBasicParsing -ErrorAction SilentlyContinue
+            $ASRRules = $ASRWebReq.Content | ConvertFrom-Json
+        } catch [System.Net.WebException] {
+
+            # GitHub is inaccessible, acquire ASR Rules (JSON format) locally.
+            Write-Host "[0] Web Request to GitHub repo to parse ASR Rules failed, switching to locally defined ASR Rules!`n" -ForegroundColor Yellow
+            $ASRRules = Get-Content -Raw ./AttackSurfaceReductionRules.json | ConvertFrom-Json
+        }
+
         $asrRules2 = $ASRRules
     } else {
+
+        $ParseASRRules = @()
+        $ParseASRRules = $Rules.Split(',')
+        $ParseASRRules | ForEach-Object {
+            Write-Output "$(Get-Date -Format G) :: HELPER SCRIPT | ASR RULES :: $_ -> MODE [$Mode]" | Out-File -FilePath $file -Append
+        }
 
         # Create an array of ASR Rules w/ GUID property
         $ASRRuleArray = @()
