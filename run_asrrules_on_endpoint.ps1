@@ -67,6 +67,8 @@ Process {
         }
 
         $asrRules2 = $ASRRules
+        Write-Output "$env:COMPUTERNAME :: $(Get-Date -Format G) :: HELPER SCRIPT | $($ASRRules.Count) ASR RULES :: MODE [$Mode]" | Out-File -FilePath $file -Append
+
     } else {
 
         $ParseASRRules = @()
