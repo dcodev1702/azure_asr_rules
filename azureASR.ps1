@@ -235,7 +235,7 @@ function Set-ASRRules {
         # If -All is toggled, loop through all running Windows VM's and enable/disable ASR accordingly.
         if ($AllVMs) {
 
-            Write-Host "`n[*] $($totalRunningVMs.Count) Azure VM's have been successfully located." -ForegroundColor Green
+            Write-Host "`n[*] $($totalRunningVMs.Count) Azure VM's have been successfully located.`n" -ForegroundColor Green
 
             [int]$VmCntr = 1
             foreach ($AzVM in $totalRunningVMs) {
