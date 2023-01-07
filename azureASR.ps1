@@ -148,12 +148,12 @@ function Set-ASRRules {
 
             $ASRWebReq = Invoke-WebRequest -Uri $URL -UseBasicParsing -ErrorAction SilentlyContinue
             $ASRRules = $ASRWebReq.Content | ConvertFrom-Json
-            Write-Host "[0] Successfully acquired & parsed ASR Rules from GitHub repo...`n" -ForegroundColor Green
+            Write-Host "[*] Successfully acquired & parsed ASR Rules from GitHub repo...`n" -ForegroundColor Green
 
         } catch [System.Net.WebException] {
 
             # GitHub is inaccessible, acquire ASR Rules (JSON format) locally.
-            Write-Host "[0] Web Request to GitHub repo to parse ASR Rules failed, switching to locally provided ASR Rules!`n" -ForegroundColor Yellow
+            Write-Host "[*] Web Request to GitHub repo to parse ASR Rules failed, switching to locally provided ASR Rules!`n" -ForegroundColor Yellow
             $ASRRules = Get-Content -Raw ./AttackSurfaceReductionRules.json | ConvertFrom-Json
         }
 
@@ -166,7 +166,7 @@ function Set-ASRRules {
             Write-Host "Exiting, goodbye..." -ForegroundColor Red
             break
         } else {
-            Write-Host "[1] Resource Group:[$ResourceGroup] successfully located..." -ForegroundColor Green
+            Write-Host "[*] Resource Group:[$ResourceGroup] successfully located..." -ForegroundColor Green
         }
 
 
@@ -194,12 +194,12 @@ function Set-ASRRules {
                     break
                 } else {
                     # Log and write results of each machine's ASR state
-                    Write-Host "`n[2] ASR Rule:[$_] located, processing..." -ForegroundColor Green
+                    Write-Host "`n[*] ASR Rule:[$_] located, processing..." -ForegroundColor Green
                 }
             }
         } else {
             # Log and write results of each machine's ASR state
-            Write-Host "`n[2] Selected ALL $($ASRRules.count) ASR Rules -> Mode:[$ModeType], processing..." -ForegroundColor Green
+            Write-Host "`n[*] Selected ALL $($ASRRules.count) ASR Rules -> Mode:[$ModeType], processing..." -ForegroundColor Green
         }
         
         # Query Azure subscription and get list of all registered Windows VM's in Azure
@@ -222,10 +222,10 @@ function Set-ASRRules {
         if (-not ([String]::IsNullOrEmpty($VirtualMachine))) {
             $VirtualMachine | Where-Object -FilterScript { 
                 if($_ -notin $totalRunningVMs.Name) { 
-                    Write-Host "`n[3] Virtual Machine:[$_] could not be found! [$_] might be sleeping, goodbye :|" -ForegroundColor Red
+                    Write-Host "`n[*] Virtual Machine:[$_] could not be found! [$_] might be sleeping, goodbye :|" -ForegroundColor Red
                     break
                 } else {
-                    Write-Host "`n[3] Virtual Machine:[$_] was successfully located..." -ForegroundColor Green
+                    Write-Host "`n[*] Virtual Machine:[$_] was successfully located..." -ForegroundColor Green
                 }
             }
             Write-Host "`nRG:[$ResourceGroup] -> ASR:[$ModeType] -> Host:[$VirtualMachine]" -ForegroundColor Magenta
@@ -234,6 +234,14 @@ function Set-ASRRules {
 
         # If -All is toggled, loop through all running Windows VM's and enable/disable ASR accordingly.
         if ($AllVMs) {
+
+            Write-Host "`n[*] $($totalRunningVMs.Count) Azure VM's have been successfully located." -ForegroundColor Green
+
+            [int]$VmCntr = 1
+            foreach ($AzVM in $totalRunningVMs) {
+                Write-Host "`t[HOST] -> [$VmCntr] $($AzVM.Name)" -ForegroundColor Yellow
+                $VmCntr += 1
+            }
 
             if ($Mode -gt 0) {
                 $VMEnabled = $true
@@ -251,7 +259,7 @@ function Set-ASRRules {
             }
 
             $totalRunningVMs | ForEach-Object {
-                Write-Host "`n[3] Attempting to apply ASR Rules against [$($_.Name)]..." -ForegroundColor Cyan
+                Write-Host "`n[*] Attempting to apply ASR Rules against [$($_.Name)]..." -ForegroundColor Cyan
                 Invoke-AzVMRunCommand -ResourceGroup $_.ResourceGroupName -VMName $_.Name -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters | Out-Null
                 Start-Sleep -s 1
             }
@@ -259,7 +267,7 @@ function Set-ASRRules {
         } else {
         
             # Search VM's to ensure the specified VM(s) exists within the Resource Group!
-            Write-Host "`n[4] Total Virtual Machines:[$(($VirtualMachine).count)] to apply ASR rules against..." -ForegroundColor Blue
+            Write-Host "`n[*] Total Virtual Machines:[$(($VirtualMachine).count)] to apply ASR rules against..." -ForegroundColor Blue
             foreach ($vm in $VirtualMachine) {
                 foreach ($azureVM in $totalRunningVMs) {
                     
