@@ -283,10 +283,15 @@ function Set-ASRRules {
 
     End {
 
-        if ($VMEnabled) {
-            Write-Host "`n$($totalRunningVMs.Count) -> Endpoint(s) successfully hardened with Attack Surface Reduction!`n" -ForegroundColor Green
+        if ($($totalRunningVMs.Count) -gt 0) {
+
+            if ($VMEnabled) {
+                Write-Host "`n$($totalRunningVMs.Count) -> Endpoint(s) successfully hardened with Attack Surface Reduction!`n" -ForegroundColor Green
+            } else {
+                Write-Host "`nAttack Surface Reduction rule(s) successfully `"DISABLED`" against $($totalRunningVMs.Count) endpoint(s)...`n" -ForegroundColor Yellow
+            }
         } else {
-            Write-Host "`nAttack Surface Reduction rule(s) successfully `"DISABLED`" against $($totalRunningVMs.Count) endpoint(s)...`n" -ForegroundColor Yellow
+            Write-Host "`nThere aren't any Azure VM's running to apply ASR Rules against." -ForegroundColor Yellow
         }
     }
 }
