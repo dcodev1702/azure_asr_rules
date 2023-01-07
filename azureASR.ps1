@@ -81,8 +81,7 @@ function Check-AzModules() {
     # Credit to: Koos Goossens @ Wortell.
     $modulesToInstall = @(
         'Az.Accounts',
-        'Az.Compute',
-        'Az.ConnectedMachine'
+        'Az.Compute'
     )
 
     Write-Host "Installing/Importing PowerShell modules..." -ForegroundColor Green
@@ -204,7 +203,7 @@ function Set-ASRRules {
         
         # Query Azure subscription and get list of all registered Windows VM's in Azure & Azure ARC
         $azure_vms = Get-AzVM -Status
-        $arc_vms = Get-AzConnectedMachine   
+        #$arc_vms = Get-AzConnectedMachine   
     }
     
     Process {
@@ -218,12 +217,12 @@ function Set-ASRRules {
             } 
         }
 
-        $arc_vms | ForEach-Object {
-            if($_.Status -eq 'Connected' -and $_.OsType -eq 'windows') {
-                $totalRunningVMs += $_.Name
+        #$arc_vms | ForEach-Object {
+        #    if($_.Status -eq 'Connected' -and $_.OsType -eq 'windows') {
+        #        $totalRunningVMs += $_.Name
                 #Write-Output "Running Azure ARC Windows Server: $($_.Name)"
-            }
-        }
+        #    }
+        #}
 
         # If -VirtualMachine is selected, check to see if user provided VM's are 
         # in $totalRunningVMs before ASR rule application/consideration
