@@ -144,7 +144,8 @@ function Set-ASRRules {
         # Attack Surface Reduction Rules JSON File
         $URL = "https://raw.githubusercontent.com/dcodev1702/azure_asr_rules/main/AttackSurfaceReductionRules.json"
         #ensure we get a response even if an error's returned
-        $ASRWebReqTry = try { 
+        try {
+
             $ASRWebReq = Invoke-WebRequest -Uri $URL -UseBasicParsing -ErrorAction SilentlyContinue
             $ASRRules = $ASRWebReq.Content | ConvertFrom-Json
             Write-Host "[0] Successfully acquired & parsed ASR Rules from GitHub repo...`n" -ForegroundColor Green
