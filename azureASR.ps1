@@ -284,9 +284,9 @@ function Set-ASRRules {
     End {
 
         if ($VMEnabled) {
-            Write-Host "`nEndpoint successfully hardened with Attack Surface Reduction!`n" -ForegroundColor Green
+            Write-Host "`n$($totalRunningVMs.Count) -> Endpoint(s) successfully hardened with Attack Surface Reduction!`n" -ForegroundColor Green
         } else {
-            Write-Host "`nAttack Surface Reduction rule(s) successfully `"DISABLED`"...`n" -ForegroundColor Yellow
+            Write-Host "`nAttack Surface Reduction rule(s) successfully `"DISABLED`" against $($totalRunningVMs.Count) endpoint(s)...`n" -ForegroundColor Yellow
         }
     }
 }
