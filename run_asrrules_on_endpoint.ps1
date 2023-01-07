@@ -91,7 +91,7 @@ Process {
         
     }
 
-    #Write-Output "[$env:COMPUTERNAME] ::: Applying $($asrRules2.count) ASR Rules -> MODE::[$Mode] to the Endpoint" | Out-File -FilePath $file -Append
+    # Where the MAGIC happens.  Apply said ASR Rules and Mode onto the current endpoint
     $asrRules2 | ForEach-Object {
         Add-MpPreference -AttackSurfaceReductionRules_Ids $_.GUID -AttackSurfaceReductionRules_Actions $Mode
     }
