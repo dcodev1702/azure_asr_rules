@@ -130,6 +130,12 @@ function Set-ASRRules {
 
     Begin {
 
+        # Use a flag -CheckAzModules to enable checking of required modules
+        if ($CheckAzModules) { Check-AzModules }
+
+        #Before querying Azure, ensure we are logged in
+        Get-AzureSubscription
+        
         # List of ASR Rules - Dated 18 DEC 2022
         # https://github.com/MicrosoftDocs/microsoft-365-docs/blob/public/microsoft-365/security/defender-endpoint/attack-surface-reduction-rules-reference.md
         
@@ -149,11 +155,6 @@ function Set-ASRRules {
             $ASRRules = Get-Content -Raw ./AttackSurfaceReductionRules.json | ConvertFrom-Json
         }
 
-        # Use a flag -CheckAzModules to enable checking of required modules
-        if ($CheckAzModules) { Check-AzModules }
-
-        #Before querying Azure, ensure we are logged in
-        Get-AzureSubscription
 
         #Check Resource Group Existing or not
         Get-AzResourceGroup -Name $ResourceGroup -ErrorVariable RGNotPresent -ErrorAction SilentlyContinue | Out-Null
