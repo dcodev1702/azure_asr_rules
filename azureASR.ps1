@@ -198,7 +198,7 @@ function Set-ASRRules {
             }
         } else {
             # Log and write results of each machine's ASR state
-            Write-Host "`n[2] Applying ALL $($ASRRules.count) ASR Rules to endpoint, processing..." -ForegroundColor Green
+            Write-Host "`n[2] Applying ALL $($ASRRules.count) ASR Rules -> [$ModeType] to endpoint, processing..." -ForegroundColor Green
         }
         
         # Query Azure subscription and get list of all registered Windows VM's in Azure
@@ -251,7 +251,7 @@ function Set-ASRRules {
             }
 
             $totalRunningVMs | ForEach-Object {
-                Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $_.Name -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters | Out-Null
+                Invoke-AzVMRunCommand -ResourceGroup $_.ResourceGroupName -VMName $_.Name -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters | Out-Null
                 Start-Sleep -s 1
             }
         
@@ -274,7 +274,7 @@ function Set-ASRRules {
                             # Invoke specific validated rules
                             $parameters = @{ "Mode" = $ModeType; "Rules" = $Rules }
                         }
-                        Invoke-AzVMRunCommand -ResourceGroup $ResourceGroup -VMName $vm -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters | Out-Null
+                        Invoke-AzVMRunCommand -ResourceGroup $azureVM.ResourceGroupName -VMName $azureVM.Name -CommandId RunPowerShellScript -ScriptPath .\run_asrrules_on_endpoint.ps1 -Parameter $parameters | Out-Null
                     }
                 }
             }             
