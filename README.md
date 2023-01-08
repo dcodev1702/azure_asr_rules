@@ -31,7 +31,7 @@ Usage:
 <br />
 <br />
    
-<font size="2">**ASR Azure VM - EXAMPLE 1 (Disable)**</font><br />
+<font size="2">**ASR Azure VM - EXAMPLE 1::ALL Azure VM's -> Disabled**</font><br />
 Import the PowerShell script, disable ASR Rules for all Azure VMs, and check to ensure the required Az Modules are installed.
 
 
@@ -41,8 +41,27 @@ Import the PowerShell script, disable ASR Rules for all Azure VMs, and check to 
 <br />
 <br />
    
-<font size="2">**ASR Azure VM - EXAMPLE 2 (Enable AuditMode)**</font><br />
-Enable all 16 ASR Rules in AuditMode on for all Azure VM's
+<font size="2">**ASR Azure VM - EXAMPLE 2::ALL Azure VM's -> AuditMode**</font><br />
+Enable all 16 ASR Rules in AuditMode on for all Azure VM's.
+
 
 ![Azure_ASR_Automation-AUDITMODE](https://user-images.githubusercontent.com/32214072/211174449-7405dbd6-a84a-4333-ad63-b48851a80c09.png)
 
+<br />
+<br />
+
+<font size="2">**ASR Azure VM - EXAMPLE 3::Single Azure VM -> Disabled**</font><br />
+Disable ASR Rules for a single Azure VM.
+
+
+![Azure_ASR_Automation-single_vm_DISABLED](https://user-images.githubusercontent.com/32214072/211214994-4775853a-055b-40e9-aa7a-96b36c5604f9.png)
+
+
+<br />
+<br />
+
+<font size="2">**ASR Azure VM - EXAMPLE 4::Single Azure VM -> AuditMode**</font><br />
+Enable all ASR Rules in AuditMode for a single Azure VM.
+
+
+![Azure_ASR_Automation-Single_VM_AuditMode](https://user-images.githubusercontent.com/32214072/211215001-6ed96549-f674-4607-b7bf-4f9c9a7acbbf.png)
