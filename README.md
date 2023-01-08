@@ -60,7 +60,7 @@ Disable ASR Rules for a single Azure VM.
 <br />
 <br />
 
-<font size="2">**ASR Azure VM - EXAMPLE 4::Single Azure VM -> AuditMode**</font><br />
+<font size="2">**ASR Azure VM - EXAMPLE 4: Single Azure VM -> AuditMode**</font><br />
 Enable all ASR Rules in AuditMode for a single Azure VM.
 
 
