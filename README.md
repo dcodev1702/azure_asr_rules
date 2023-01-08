@@ -65,3 +65,23 @@ Enable all ASR Rules in AuditMode for a single Azure VM.
 
 
 ![Azure_ASR_Automation-Single_VM_AuditMode](https://user-images.githubusercontent.com/32214072/211215001-6ed96549-f674-4607-b7bf-4f9c9a7acbbf.png)
+
+
+<br />
+<br />
+
+<font size="2">**ASR Azure VM - EXAMPLE 5: Multiple Azure VM's -> AuditMode**</font><br />
+Enable all ASR Rules in AuditMode for selected Azure VM's.
+
+![Azure_ASR_Automation-Multiple_VMs_AuditMode](https://user-images.githubusercontent.com/32214072/211217465-9098de3e-e16d-4bac-b534-7b0cdf301e22.png)
+
+
+
+<br />
+<br />
+
+<font size="2">**ASR Azure VM - EXAMPLE 6: Multiple Azure VMs modifying mutliple rules per Azure VM -> Enabled (Block)**</font><br />
+Enable multiple ASR Rules in Block mode for selected Azure VM's.
+
+
+![Azure_ASR_Automation-Multiple_VMs_Multiple_Rules_Block_Mode](https://user-images.githubusercontent.com/32214072/211217472-b07d5857-1476-4415-bfd4-48940b4ae77c.png)
