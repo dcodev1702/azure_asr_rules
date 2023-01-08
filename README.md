@@ -31,7 +31,7 @@ Usage:
 <br />
 <br />
    
-<font size="2">**ASR Azure VM - EXAMPLE 1::ALL Azure VM's -> Disabled**</font><br />
+<font size="2">**ASR Azure VM - EXAMPLE 1: ALL Azure VM's -> Disabled**</font><br />
 Import the PowerShell script, disable ASR Rules for all Azure VMs, and check to ensure the required Az Modules are installed.
 
 
@@ -41,7 +41,7 @@ Import the PowerShell script, disable ASR Rules for all Azure VMs, and check to 
 <br />
 <br />
    
-<font size="2">**ASR Azure VM - EXAMPLE 2::ALL Azure VM's -> AuditMode**</font><br />
+<font size="2">**ASR Azure VM - EXAMPLE 2: ALL Azure VM's -> AuditMode**</font><br />
 Enable all 16 ASR Rules in AuditMode on for all Azure VM's.
 
 
@@ -50,7 +50,7 @@ Enable all 16 ASR Rules in AuditMode on for all Azure VM's.
 <br />
 <br />
 
-<font size="2">**ASR Azure VM - EXAMPLE 3::Single Azure VM -> Disabled**</font><br />
+<font size="2">**ASR Azure VM - EXAMPLE 3: Single Azure VM -> Disabled**</font><br />
 Disable ASR Rules for a single Azure VM.
 
 
